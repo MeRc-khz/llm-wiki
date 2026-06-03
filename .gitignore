@@ -1,0 +1,4 @@
+_archive/
+*.swp
+*.tmp
+.DS_Store
