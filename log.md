@@ -7,7 +7,7 @@
 ## [2026-05-25] create | Wiki initialized
 - Domain: AI Research, Multi-Agent Systems, and LLM Personal Knowledge Management (PKM).
 - Structure created with `SCHEMA.md`, `index.md`, and `log.md`.
-- Active path: `/root/llm-wiki/`.
+- Active path: `/srv/projects/llm-wiki/`.
 
 ## [2026-05-25] ingest | Set up LLM Wiki (Andrej Karpathy)
 - Ingested raw source: `raw/articles/llm-wiki-pattern-introduction.md`
@@ -178,3 +178,11 @@
 - Examined the landing page layout, Stripe product config, and Node.js backend architecture.
 - Synthesized and compiled new entity page `entities/czarui.md` documenting the full monetization pipeline and Web3 revenue split flow.
 - Registered the page in `index.md`.
+
+## [2026-07-08] create | Wiki build-out (structure + depth)
+- Diagnosed stale `WIKI_PATH` env var pointing at nonexistent `/root/llm-wiki`; corrected to `/srv/projects/llm-wiki` in `/root/.bashrc` (line 106) and `/root/.hermes/.env` (line 464). Lint now runs against the real wiki.
+- Compiled the one previously uncompiled raw source: `raw/transcripts/paperchasers-master.md` (the 34-min *Paperchasers* master, Furious Styles / Coupe da Villian) into new entity page `entities/furious-styles-coupe-da-villian.md`. Added to `index.md`.
+- Linked `[[furious-styles-coupe-da-villian]]` from `entities/bizarre-lynx.md` and added `paperchasers-master.md` to its `sources:`; bumped `updated:` to 2026-07-08.
+- Created `comparisons/rag-vs-llm-wiki.md` (RAG vs. LLM Wiki Pattern) and `queries/solana-pull-dividends.md` (Pull vs. Push NFT dividend synthesis) — fills the two empty index sections with genuine cross-page synthesis. Added both to `index.md`.
+- Total pages: 26 -> 29. Skipped `_meta/topic-map.md` (reserved for 200+ pages per SCHEMA.md scaling rule).
+- Ran lint after edits: 0 critical / 0 warnings.

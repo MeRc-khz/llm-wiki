@@ -61,6 +61,7 @@ Specialized application division deploying high-utility Progressive Web Applicat
 *   **[[lawnczar|LawnCzar]] / LawnMap:** A geocentric community marketplace PWA for localized lawn care and yard commerce.
 *   **[[roachcoach|RoachCoach]]:** A gamified Houston-based food truck tracker PWA featuring location-based matches and menu card swipes.
 *   **[[the-science-of-getting-rich|The Science of Getting Rich]]:** Our high-efficiency audiobook cloning and Skool course project.
+*   **[[quantum-mechanix|Quantum Mechanix]]:** Our cyberpunk-noir microdrama series for the Fanbase creator-equity platform.
 *   **[[savage-dad-style-guide|The Savage Dad Apparel Line]]:** Our lifestyle clothing brand and component library.
 
 ---

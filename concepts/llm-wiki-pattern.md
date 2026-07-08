@@ -12,7 +12,7 @@ contradictions: []
 
 # The LLM Wiki Pattern
 
-The **LLM Wiki Pattern** is a novel methodology for building and maintaining personal or team [[pkm|knowledge bases]] using LLMs. Developed as a compounding, persistent alternative to standard [[rag]], it shifts the effort from "retrieving and synthesizing on every query" to "compiling knowledge once and keeping it current."
+The **LLM Wiki Pattern** is a novel methodology for building and maintaining personal or team [[pkm|knowledge bases]] using LLMs. Developed as a compounding, persistent alternative to standard [[rag]], it shifts the effort from "retrieving and synthesizing on every query" to "compiling knowledge once and keeping it current." (For a side-by-side breakdown of the trade-offs, see [[rag-vs-llm-wiki|RAG vs. the LLM Wiki Pattern]].)
 
 ## Core Idea: Compounding vs. Rediscovering
 

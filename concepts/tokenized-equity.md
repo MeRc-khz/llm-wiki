@@ -84,3 +84,5 @@ Tokenization allows founders to design flexible exit and operational strategies:
 
 * **Fractional Funding (Active Operations):** Founders retain 51% of the tokens (retaining operational control) and sell 49% of the tokens to the public, raising initial capital where proceeds flow directly back into the Gnosis Safe business treasury.
 * **Complete Community Exit:** Founders sell 100% of the tokens. The community DAO gains complete legal ownership of the DAO LLC, the domain, and all intellectual property. Through on-chain voting, token holders can elect managers, decide on platform updates, and hire software firms like [[paperclip-agent-roster|Paperclip Agent Companies]] to run operations.
+
+For the on-chain mechanics of actually distributing those dividends to holders at scale, see [[solana-pull-dividends|Solana NFT Dividend Pattern (Pull vs. Push)]].

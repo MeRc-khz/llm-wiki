@@ -12,7 +12,7 @@ contradictions: []
 
 # Skool.com Course & Community Strategy
 
-A modern digital product framework combines premium content (like a high-fidelity [[the-science-of-getting-rich|audiobook]]) with a highly engaging, gamified community platform. **Skool.com** is currently the leading platform for this hybrid model because it unifies **classroom learning**, **community forums**, and **gamified leaderboards** into a single, high-retention portal.
+A modern digital product framework combines premium content (like a high-fidelity [[the-science-of-getting-rich|audiobook]]) with a highly engaging, gamified community platform. **Skool.com** is currently the leading platform for this hybrid model because it unifies **classroom learning**, **community forums**, and **gamified leaderboards** into a single, high-retention portal. (See also [[the-conglomerate-group|The Conglomerate Group]], which runs this model for its audiobook course project.)
 
 ---
 

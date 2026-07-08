@@ -12,7 +12,7 @@ contradictions: []
 
 # The Science of Getting Rich Audiobook & Skool Course Project
 
-This project focuses on the production, packaging, and commercialization of a high-fidelity digital audiobook of Wallace D. Wattles’ classic 1910 text, ***The Science of Getting Rich***, narrated by a voice-cloned model trained on the legendary ***[[ntrafx-podcast]]***. The audiobook is designed to be bundled with an interactive, community-driven **Skool.com Course** to maximize entrepreneurial impact and user transformation.
+This project focuses on the production, packaging, and commercialization of a high-fidelity digital audiobook of Wallace D. Wattles’ classic 1910 text, ***The Science of Getting Rich***, narrated by a voice-cloned model trained on the legendary ***[[ntrafx-podcast]]***. The audiobook is designed to be bundled with an interactive, community-driven **Skool.com Course** (see [[skool-course|Skool Course & Community Strategy]]) to maximize entrepreneurial impact and user transformation.
 
 ---
 

@@ -2,7 +2,7 @@
 
 > Content catalog. Every wiki page is listed under its type with a one-line summary.
 > Read this first to find relevant pages for any query.
-> Last updated: 2026-05-29 | Total pages: 26
+> Last updated: 2026-07-08 | Total pages: 29
 
 ## Entities
 - [[ballademix]] — A gamified Solana NFT collection featuring generative beats, cryptographic wallet hunts, and a video portal.
@@ -10,6 +10,7 @@
 - [[bizarre-lynx]] — Cryptographically signed AIEOS v1.2 digital twin, G-Funk rap icon, and African American cultural curator.
 - [[czarui]] — The bzr-dial Stripe-integrated licensing engine, monetization funnel, and IPFS distribution hub.
 - [[domain-portfolio]] — The complete registry of GoDaddy and AWS domains routed through our Nginx reverse proxy.
+- [[furious-styles-coupe-da-villian]] — Primary rap persona (Furious Styles / Coupe da Villian) behind Bizarre Lynx's source voice; the Paperchasers master recording.
 - [[lawnczar]] — Geocentric PWA marketplace for yard sales and local community commerce.
 - [[makeufamous]] — A decentralized digital-first online talent show with interactive AI Audition Judges.
 - [[makeufamous-theme-song]] — The official R&B/Hip-Hop theme track ("Make U Famous") for the talent platform.
@@ -35,5 +36,7 @@
 - [[tokenized-equity]] — A hybrid business and technical framework that fractionalizes asset ownership into legal-wrapped digital tokens.
 
 ## Comparisons
+- [[rag-vs-llm-wiki]] — RAG vs. the LLM Wiki Pattern: when synthesis happens and who pays the compute.
 
 ## Queries
+- [[solana-pull-dividends]] — Why Solana NFT dividends use a Pull/claim pattern over Push, with deployment targets.
