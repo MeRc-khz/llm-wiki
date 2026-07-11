@@ -2,3 +2,7 @@ _archive/
 *.swp
 *.tmp
 .DS_Store
+
+# Obsidian workspace (per-device UI state, not shared)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json

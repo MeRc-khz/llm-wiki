@@ -1,0 +1,18 @@
+{
+  "commitMessage": "vault sync: {{date}}",
+  "commitBody": "Auto-synced from Obsidian.",
+  "autoPullInterval": 10,
+  "autoPushInterval": 10,
+  "autoSaveInterval": 0,
+  "pullBeforePush": true,
+  "disablePush": false,
+  "disablePull": false,
+  "syncMethod": "merge",
+  "syncOnDeviceChange": false,
+  "automaticallyOpenOnStartup": false,
+  "refreshSourceControl": true,
+  "showStatusBar": true,
+  "showBranchStatusBar": true,
+  "setGitPath": "",
+  "basePath": ""
+}
