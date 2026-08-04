@@ -262,3 +262,12 @@
 - Created concept: concepts/mcp.md — Model Context Protocol (Tools/Resources/Prompts, JSON-RPC, transports), complements RAG
 - Cross-referenced: unreal-mcp ↔ mcp ↔ rag
 - Updated index.md: 37 pages total
+
+
+## [2026-08-04] ingest | From Words to Worlds: Integrating MCP into the Unreal Editor (Unreal Fest Chicago 2026)
+- Ingested: https://www.youtube.com/watch?v=lDf_y-YPELo (36:26 talk, Unreal Engine official)
+- Raw source: raw/transcripts/from-words-to-worlds-unreal-mcp-unreal-fest-2026.md (sha256 6fe3f59f)
+- Updated concept: concepts/unreal-mcp.md - added UE 5.8 official launch, design philosophy (directable/editable/not-black-box), world-building framework (toolsets + PCG primitives 80+ / examples / skills), reflection-to-JSON schema+data, async results, toolset/skill/example best practices, shipping and availability
+- Created concept: concepts/agent-skills.md - open Agent Skills standard + Unreal native UAgentSkill (C++/Python/Blueprints), best practices
+- Cross-referenced: unreal-mcp, mcp, agent-skills, rag
+- Updated index.md: 38 pages total

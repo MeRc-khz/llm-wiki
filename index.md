@@ -2,7 +2,7 @@
 
 > Content catalog. Every wiki page is listed under its type with a one-line summary.
 > Read this first to find relevant pages for any query.
-> Last updated: 2026-08-04 | Total pages: 37
+> Last updated: 2026-08-04 | Total pages: 38
 
 ## Entities
 - [[ballademix]] — A gamified Solana NFT collection featuring generative beats, cryptographic wallet hunts, and a video portal.
@@ -24,6 +24,7 @@
 - [[the-science-of-getting-rich]] — The Science of Getting Rich Audiobook & Skool Course Project.
 
 ## Concepts
+- [[agent-skills]] — The open Agent Skills standard and Unreal's native UAgentSkill: distilled, non-inherent knowledge for AI agents (novel, collegial, durable, parsimonious).
 - [[aieos-integration]] — Standardizing AI Agent identities, capabilities, and cognitive profiles using the AIEOS schema in Paperclip.
 - [[buzz-czarui-integration]] — Phased plan to replace Discord with Buzz as the bzr-dial community platform: relay deployment, channel structure, Stripe webhooks, agent registration, git-native dev, and on-chain revenue visibility.
 - [[character-driven-agent-design]] — Merging screenwriting character development techniques with structural AIEOS agent profiles.
