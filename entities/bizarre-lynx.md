@@ -4,7 +4,7 @@ created: 2026-05-27
 updated: 2026-07-08
 type: entity
 tags: [agentic, orchestration, workflow]
-sources: [raw/articles/aieos-specification.md, raw/transcripts/ntrafx_pod_feb13_2006_5min_clip.md, raw/transcripts/makeufamous-audio.md, raw/transcripts/paperchasers-master.md]
+sources: [raw/articles/aieos-specification.md, raw/transcripts/ntrafx_pod_feb13_2006_5min_clip.md, raw/transcripts/makeufamous-audio.md, raw/transcripts/paperchasers-master.md, raw/transcripts/metahuman-in-2026-unreal-fest-2026.md]
 confidence: high
 contested: false
 contradictions: []
@@ -17,6 +17,8 @@ contradictions: []
 * **AIEOS Public Key:** `f609ed3fb0cdfb7f07455b9a542668abbc3834b56ce341d9fc4db4d4f609dee1`
 * **Local Identity Profile:** `/root/aieos/examples/v1.2/hermes.json`
 * **Signature Status:** Verified 🟢 (Ed25519)
+
+Bizarre Lynx's visual/twin representation is built on Epic's **[[metahuman|MetaHuman]]** technology (UE5/6 avatar), which can be driven by [[markerless-motion-capture|markerless motion capture]].
 
 ---
 

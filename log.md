@@ -271,3 +271,14 @@
 - Created concept: concepts/agent-skills.md - open Agent Skills standard + Unreal native UAgentSkill (C++/Python/Blueprints), best practices
 - Cross-referenced: unreal-mcp, mcp, agent-skills, rag
 - Updated index.md: 38 pages total
+
+
+## [2026-08-04] ingest | MetaHuman in 2026: Five Years In, What's Next? (Unreal Fest Chicago 2026)
+- Ingested: https://www.youtube.com/watch?v=IsbgHRa5N3A (33:16 talk, Unreal Engine official)
+- Raw source: raw/transcripts/metahuman-in-2026-unreal-fest-2026.md (sha256 b37a7938)
+- Created entity: entities/metahuman.md - 5-yr timeline (Creator, Mesh-to-MetaHuman, Animator, in-engine 2025), 8M+ generated, UE 5.8 (faces+bodies auto-rig, stylized Purple Puppet char, unbaked materials, MetaHuman Collections/crowds ISKM, DevKit open-sourcing DNA + Open Rig Logic MIT), AI roadmap (Live Link Face NPU, image-to-MetaHuman, EDA, neural renderer)
+- Created concept: concepts/markerless-motion-capture.md - SMPL/FLAME/MANO lineage, Michael Black/Meshcapade joins Epic, HUGH diffusion-transformer model, MetaHuman Animator markerless plugin (any camera, local, body+hands+face)
+- Updated entity: entities/bizarre-lynx.md - linked to MetaHuman + markerless-motion-capture
+- Added SCHEMA tag category: Game & Real-time (game-dev, unreal, character, animation, motion-capture)
+- Cross-referenced: metahuman, markerless-motion-capture, bizarre-lynx, unreal-mcp
+- Updated index.md: 40 pages total

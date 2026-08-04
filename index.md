@@ -2,7 +2,7 @@
 
 > Content catalog. Every wiki page is listed under its type with a one-line summary.
 > Read this first to find relevant pages for any query.
-> Last updated: 2026-08-04 | Total pages: 38
+> Last updated: 2026-08-04 | Total pages: 40
 
 ## Entities
 - [[ballademix]] — A gamified Solana NFT collection featuring generative beats, cryptographic wallet hunts, and a video portal.
@@ -15,6 +15,7 @@
 - [[lawnczar]] — Geocentric PWA marketplace for yard sales and local community commerce.
 - [[makeufamous]] — A decentralized digital-first online talent show with interactive AI Audition Judges.
 - [[makeufamous-theme-song]] — The official R&B/Hip-Hop theme track ("Make U Famous") for the talent platform.
+- [[metahuman]] — Epic's digital-human technology (5 yrs, 8M+ generated): Creator, Mesh-to-MetaHuman, Animator, DevKit (DNA + Open Rig Logic), crowds, and AI roadmap.
 - [[neurocanvas]] — A spatial canvas-based local and mobile wiki editor built with React and Tauri v2.
 - [[ntrafx-podcast]] — An audio series focusing on personal freedom, psychology, and structural efficiency.
 - [[paperclip-agent-roster]] — The core Paperclip agent roles (Coder, QA, UX, Security) mapped into standardized AIEOS formats.
@@ -29,6 +30,7 @@
 - [[buzz-czarui-integration]] — Phased plan to replace Discord with Buzz as the bzr-dial community platform: relay deployment, channel structure, Stripe webhooks, agent registration, git-native dev, and on-chain revenue visibility.
 - [[character-driven-agent-design]] — Merging screenwriting character development techniques with structural AIEOS agent profiles.
 - [[llm-wiki-pattern]] — A persistent, compounding alternative to RAG for building personal knowledge bases.
+- [[markerless-motion-capture]] — Extracting 3D motion from ordinary video (no markers/cameras/studio); Michael Black/Meshcapade's SMPL lineage, the HUGH model, and its arrival in MetaHuman Animator.
 - [[media-ingestion]] — Pipelines and tools for importing audio, music, podcasts, and video into the wiki.
 - [[mcp]] — The Model Context Protocol: how AI clients talk to servers via Tools, Resources, and Prompts over JSON-RPC.
 - [[pkm]] — Personal Knowledge Management workflows and methodologies enhanced by artificial intelligence.
