@@ -10,9 +10,13 @@ contested: false
 contradictions: []
 ---
 
+> **Community platform:** Migrating from Discord to [[buzz]] (self-hosted Nostr relay). See [[buzz-czarui-integration]] for the full integration plan — Buzz replaces Discord with first-class agent membership, Stripe webhook bridging, git-native development, and on-chain revenue visibility.
+
 # czarui (bzr-dial-ui Sales System)
 
-The **czarui** system (synced with the production repository `git@github.com:MeRc-khz/czarui.git` and cloned at `/root/czarui`) is the commercial licensing engine, Stripe transaction funnel, automatic license generator, and distribution hub for our interactive **[[ballademix|bzr-dial-menu]]** widgets and G-Funk interfaces. 
+The **czarui** system (synced with the production repository `git@github.com:MeRc-khz/czarui.git` and cloned at `/root/czarui`) is the commercial licensing engine, Stripe transaction funnel, automatic license generator, and distribution hub for our interactive **[[ballademix|bzr-dial-menu]]** widgets and G-Funk interfaces.
+
+Features an **[[ai-conversational-forms|AI Conversational Forms]]** modal system — captures form data through chat-based step-by-step interaction with inline rendering of dropdowns, radios, switches, and date pickers in the chat window. 
 
 This platform serves as **[[the-conglomerate-group|The Conglomerate Group's]]** primary web component monetization gateway, packaging our premium Web Audio/Video widgets into commercial license classes.
 
@@ -82,4 +86,4 @@ To support our **[[tokenized-equity|Tokenized Equity Framework]]**:
 1. Stripe captures fiat credit card and Apple Pay payments.
 2. Revenues flow up to the corporate Stripe account.
 3. Our automated backend scripts (under development) periodically convert the Stripe fiat balance to digital USDC.
-4. The USDC is pushed directly to our on-chain Gnosis multi-sig treasury at `0x7890123456789012345678901234567890123456` or the Solana settlement address `B1Z4rr3LyNxSeLfArChItEcT7777777777777777` where holders can programmatically "pull" their dividend share.
+4. The USDC is pushed directly to our on-chain Gnosis multi-sig treasury at `0x7890123456789012345678901234567890123456` or the Solana settlement address `B1Z4rr3LyNxSeLfArChItEcT7777777777777777` where holders can programmatically "pull" their dividend share. Revenue events are bridged to the [[buzz]] community via workflow webhooks — see [[buzz-czarui-integration]].

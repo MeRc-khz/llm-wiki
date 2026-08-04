@@ -52,6 +52,7 @@ All tags used must belong to this predefined taxonomy. To add a tag, document it
 - **Infrastructure:** `database`, `rag`, `vector-search`, `mcp`
 - **Media Ingest:** `podcast`, `audio-processing`, `video`, `music`, `lyrics`, `transcript`
 - **Meta:** `comparison`, `historical-timeline`, `controversy`
+- **Community Platforms:** `community`, `self-hosted`, `nostr`, `chat-platform`
 
 ## Page Thresholds
 - **Create a Page:** When an entity/concept is central to one source, or is mentioned across 2+ separate sources.

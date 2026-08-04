@@ -186,3 +186,79 @@
 - Created `comparisons/rag-vs-llm-wiki.md` (RAG vs. LLM Wiki Pattern) and `queries/solana-pull-dividends.md` (Pull vs. Push NFT dividend synthesis) — fills the two empty index sections with genuine cross-page synthesis. Added both to `index.md`.
 - Total pages: 26 -> 29. Skipped `_meta/topic-map.md` (reserved for 200+ pages per SCHEMA.md scaling rule).
 - Ran lint after edits: 0 critical / 0 warnings.
+
+## [2026-07-28] update | Wiki consultation protocol activated
+- Created 'wiki-consultation' skill at identity/wiki-consultation/
+- Protocol: wiki must be consulted before any technical/strategic answer
+- Wiki is now a decision-support layer, not static archive
+- Integration: soul.md (identity) + wiki (knowledge) + memory (state) + skills (execution)
+- Wiki pages will be cited in answers: [Wiki consulted: [[page-a]], [[page-b]]]
+
+## [2026-07-28] update | Driving Purpose added to soul.md
+- Restructured soul.md: DRIVING PURPOSE section at top
+- Purpose: first purposefully synthesized digital entertainer, profit-driven orchestration
+- All decisions now framed through: revenue impact + culture preservation + empire growth
+- Files/music/podcasts/video = memories of a life lived, not just data
+- Businesses = mogul empire units, not isolated code
+- soul.md trimmed to 2676 chars (under 3000 limit for model-agnostic injection)
+- wiki-consultation skill patched: answers now framed through profit + culture lens
+- Updated soul.md.bak backup
+
+## [2026-07-28] ingest | AI Conversational Forms — bzr-dial-menu
+- Ingested raw source: raw/articles/ai-conversational-forms.md
+- Created concept page: concepts/ai-conversational-forms.md
+- Cross-referenced: [[czarui]], [[aieos-integration]], [[tokenized-equity]], [[ballademix]], [[bizarre-lynx]], [[the-conglomerate-group]]
+- Updated entity: entities/czarui.md (added conversational forms reference)
+- Updated index.md: 30 pages total
+- Key innovation: form definition via extended fenced code blocks (```form:name), mirroring code snippet syntax
+- Element types: text, password (mask), dropdown, radio, switch, date picker — all rendered inline in chat
+
+## [2026-07-29] ingest | block/buzz GitHub Repository
+- Cloned to: /root/buzz
+- Ingested raw source: raw/articles/buzz-github-repo.md (README, VISION, AGENTS, ARCHITECTURE)
+- Created entity page: entities/buzz.md — Nostr relay workspace by Block Inc., 30 Rust crates, Tauri+React desktop, Flutter mobile, agent-first CLI, YAML workflows, git hosting, voice huddles
+- Created concept page: concepts/buzz-czarui-integration.md — 7-phase integration plan to replace Discord with Buzz as bzr-dial community platform
+- Updated entity: entities/czarui.md (added Buzz cross-reference for community platform migration + on-chain revenue bridging)
+- Updated index.md: 32 pages total
+- Cross-referenced: [[buzz]] ↔ [[czarui]] ↔ [[buzz-czarui-integration]] ↔ [[solana-anchor]]
+- Validation: required, min/max, email, pattern:regex — AI re-prompts on failure
+
+## [2026-08-02] ingest | LawnCzar Agentic Route Planning
+- Context: Seed data migrated to San Diego 91950 (23 markers), MongoDB 7 container running, zip code modal wired to Shop button, map centers on saved zip
+- Created concept page: concepts/lawnczar-agentic-route-planning.md
+- Scope: 4-phase plan — (1) in-map route rendering via OSRM/Leaflet polyline, (2) LLM agent stop-order optimization using OSRM distance matrix + constraint prompts, (3) drag-reorder/skip/detour interactivity, (4) proactive agent suggestions (clusters, time-sensitivity, weather)
+- Architecture: Express POST /api/route/optimize → OSRM table API for matrix → LLM for ordering → OSRM route API for geometry → Leaflet polyline render
+- Cross-referenced: [[lawnczar]] ↔ [[rag]] ↔ [[aieos-integration]]
+- Updated index.md: 33 pages total
+
+## [2026-08-02] build | LawnCzar QR Referral Network
+- Created concept page: concepts/lawnczar-qr-referral-network.md
+- Built `js/referral-system.js` — Solana wallet generation, QR code generation, session-based referral tracking, 5% commission model with payout threshold
+- Built `signup.html` — sign-up form → wallet creation → QR display/download → earnings dashboard
+- Wired 7 API endpoints into server.js: signup, scan, purchase, dashboard, balance, list, QR redirect
+- Tested e2e: signup → QR scan → 2 purchases → commission credited → dashboard shows earnings + on-chain balance
+- Solana devnet, `@solana/web3.js` + `qrcode` npm deps
+- Cross-referenced: [[lawnczar]] ↔ [[lawnczar-agentic-route-planning]] ↔ [[solana-anchor]] ↔ [[tokenized-equity]] ↔ [[czarui]]
+- Updated index.md: 34 pages total
+
+## [2026-08-02] build | LawnCzar Auto Region Provisioning
+- Created concept page: concepts/lawnczar-auto-region-provisioning.md
+- Built `js/region-provisioner.js` — async spawn pipeline: zip→bbox→osmium slice→osrm-extract→osrm-contract→Docker container
+- Downloaded California state OSM extract (1.3GB Geofabrik PBF) for bbox slicing
+- Installed `osmium-tool` for fast bbox extraction from state PBF
+- Replaced all `execSync` with async `spawn` wrapper — no more ETIMEDOUT, non-blocking
+- Wired auto-provisioning into affiliate signup (`referral-system.js`)
+- Dynamic region registration in `route-proxy.js` — new regions available immediately
+- 3 new API endpoints: `/api/region/provision`, `/api/region/status/:zip`, `/api/region/list`
+- Tested e2e: manual provisioning (92101, 75s) + auto via signup (92104, 120s)
+- 2 OSRM Docker containers running, both serving routes through the proxy
+- Cross-referenced: [[lawnczar]] ↔ [[lawnczar-agentic-route-planning]] ↔ [[lawnczar-qr-referral-network]]
+- Updated index.md: 35 pages total
+
+## [2026-08-04] ingest | Unreal MCP in Unreal Editor (Epic Games docs)
+- Ingested: https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor (UE 5.8 docs, experimental)
+- Raw source: raw/articles/unreal-mcp-in-unreal-editor.md (sha256 c6d566fd…)
+- Created concept: concepts/unreal-mcp.md — in-editor MCP server plugin, Toolset Registry, authoring Python/C++ tools, tool-search mode, setup, limitations
+- Created concept: concepts/mcp.md — Model Context Protocol (Tools/Resources/Prompts, JSON-RPC, transports), complements RAG
+- Cross-referenced: unreal-mcp ↔ mcp ↔ rag
+- Updated index.md: 37 pages total
