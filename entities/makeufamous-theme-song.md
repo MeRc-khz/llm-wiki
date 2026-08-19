@@ -67,20 +67,26 @@ The verbatim transcript of the audio was extracted programmatically using the [[
 
 ### Verse 2 (Speaker 2)
 > Are you kidding me?
-> Mommy, Hatsie Mama, I like you. You're fit, crazy, sexy, cool.
-> You out your business, mama. You independent, Hatsie, getting it in.
+> Mommy, Hotsie, Mama, I like you. 
+> You're fit, crazy, sexy, cool.
+> You about your business, mama. 
+> You independent, Hotsie, 
+> getting it in.
 > Looking pricey in them Jimmy Choo.
 > My first ever killer hurts award goes to...
-> My Dana, bitch. Whoa. I'm so cold.
-> 45, this is my swag. My speech.
-> My Billy D. My Billy G. Loves Pink Biggity C's, Mommy.
-> Work the scene, Hatsie. Little Winks, my Mommy.
-> My beat sweet, sweet. 112 like we'd taxi to Mike D.
-> We sweep these episodes, you ladies love playing.
-> So get these feelings, Mommy. I'm in your ears, sweet.
-> Juicy, speaking millions, Mommy, drilling, drilling, drilling, spilling deep, bomb beating you.
+> Montana Fishburn, oh.., 
+> I'm so colt 45,
+> this is my swag. My steeze.
+> My Billy D, My Billy jean, Loves Pink Vicky C's, Mommy.
+>Grip the sink, Hotsie. Little Minks, mama.
+> My beat sweet, sweet. 112 language,
+> back sit of my Jeep, we swing these episodes,
+> you ladies love playing.
+> So catch these feelings, Mommy. I'm in your ears, sweettooth,
+> speaking millions Mama.
+> drilling, drilling, drilling, spilling deep, I'm in you.
 > And ain't no clowning, you styling, amazing.
-> I'm a cut like Jay-Z. Diamond.
+> I'm a cut like Jacobs' Diamond.
 
 ---
 

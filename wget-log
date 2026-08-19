@@ -1,0 +1,11 @@
+--2026-07-28 12:30:37--  https://obsidian.md/download?os=linux
+Resolving obsidian.md (obsidian.md)... 104.26.0.147, 172.67.74.64, 104.26.1.147, ...
+Connecting to obsidian.md (obsidian.md)|104.26.0.147|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [text/html]
+Saving to: ‘download?os=linux’
+
+download?os=linux                 [<=>                                               ]       0  --.-KB/s               download?os=linux                 [ <=>                                              ]  52.92K  --.-KB/s    in 0.006s  
+
+2026-07-28 12:30:37 (8.90 MB/s) - ‘download?os=linux’ saved [54192]
+
