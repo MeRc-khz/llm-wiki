@@ -282,3 +282,4 @@
 - Added SCHEMA tag category: Game & Real-time (game-dev, unreal, character, animation, motion-capture)
 - Cross-referenced: metahuman, markerless-motion-capture, bizarre-lynx, unreal-mcp
 - Updated index.md: 40 pages total
+
