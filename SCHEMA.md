@@ -47,13 +47,14 @@ All tags used must belong to this predefined taxonomy. To add a tag, document it
 
 ### Categories:
 - **Models:** `model`, `architecture`, `benchmark`, `fine-tuning`, `inference`
-- **Agents:** `agentic`, `orchestration`, `workflow`, `framework`, `tool-use`
+- **Agents:** `agentic`, `orchestration`, `workflow`, `framework`, `tool-use`, `agent`
 - **PKM & Design:** `pkm`, `knowledge-base`, `wiki-pattern`, `methodology`
-- **Infrastructure:** `database`, `rag`, `vector-search`, `mcp`
+- **Infrastructure:** `database`, `rag`, `vector-search`, `mcp`, `infrastructure`, `provisioning`, `automation`, `osrm`, `osm`
 - **Media Ingest:** `podcast`, `audio-processing`, `video`, `music`, `lyrics`, `transcript`
 - **Meta:** `comparison`, `historical-timeline`, `controversy`
 - **Community Platforms:** `community`, `self-hosted`, `nostr`, `chat-platform`
 - **Game & Real-time:** `game-dev`, `unreal`, `character`, `animation`, `motion-capture`
+- **Local Commerce & LawnCzar:** `lawnczar`, `routing`, `map`, `itinerary`, `referral`, `crypto`, `solana`, `qr`, `affiliate`, `monetization`
 
 ## Page Thresholds
 - **Create a Page:** When an entity/concept is central to one source, or is mentioned across 2+ separate sources.

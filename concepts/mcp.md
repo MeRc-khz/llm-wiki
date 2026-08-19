@@ -28,7 +28,7 @@ The protocol is transport-agnostic; implementations support different transports
 
 ## Role in agentic workflows
 
-MCP standardizes how agents reach out of the model context and into external systems (editors, files, databases, tools). It is complementary to, not a replacement for, [[rag]]: RAG retrieves grounding content into context, while MCP gives the agent live access to callable tools/resources. This makes it a foundational layer for [[tool-use]] and editor/tool orchestration.
+MCP standardizes how agents reach out of the model context and into external systems (editors, files, databases, tools). It is complementary to, not a replacement for, [[rag]]: RAG retrieves grounding content into context, while MCP gives the agent live access to callable tools/resources. This makes it a foundational layer for [[agent-skills]] and editor/tool orchestration.
 
 ## See also
 

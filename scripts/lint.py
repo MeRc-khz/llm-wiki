@@ -56,8 +56,12 @@ def lint():
                 with open(path, "r") as f:
                     content = f.read()
 
-                # Extract Links
-                links = WIKILINK_RE.findall(content)
+                # Extract Links — but ignore fenced + inline code blocks so that
+                # things like a distance matrix `[[0, 12, 25], ...]` sitting inside
+                # a code block don't get mistaken for a wikilink.
+                content_no_code = re.sub(r"```.*?```", "", content, flags=re.DOTALL)
+                content_no_code = re.sub(r"`[^`]*`", "", content_no_code)
+                links = WIKILINK_RE.findall(content_no_code)
                 # Parse aliases like [[slug|alias]]
                 cleaned_links = [l.split("|")[0].strip() for l in links]
                 wikilinks[slug] = cleaned_links
