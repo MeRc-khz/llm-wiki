@@ -2,7 +2,7 @@
 
 > Content catalog. Every wiki page is listed under its type with a one-line summary.
 > Read this first to find relevant pages for any query.
-> Last updated: 2026-08-04 | Total pages: 40
+> Last updated: 2026-08-18 | Total pages: 41
 
 ## Entities
 - [[ballademix]] — A gamified Solana NFT collection featuring generative beats, cryptographic wallet hunts, and a video portal.
@@ -29,6 +29,7 @@
 - [[aieos-integration]] — Standardizing AI Agent identities, capabilities, and cognitive profiles using the AIEOS schema in Paperclip.
 - [[buzz-czarui-integration]] — Phased plan to replace Discord with Buzz as the bzr-dial community platform: relay deployment, channel structure, Stripe webhooks, agent registration, git-native dev, and on-chain revenue visibility.
 - [[character-driven-agent-design]] — Merging screenwriting character development techniques with structural AIEOS agent profiles.
+- [[elite-security-management]] — SaaS platform for security staffing agencies: 500+ guards, multi-venue scheduling, certification tracking, shift self-selection, real-time dispatcher matrix, multi-tenant SaaS resale.
 - [[llm-wiki-pattern]] — A persistent, compounding alternative to RAG for building personal knowledge bases.
 - [[markerless-motion-capture]] — Extracting 3D motion from ordinary video (no markers/cameras/studio); Michael Black/Meshcapade's SMPL lineage, the HUGH model, and its arrival in MetaHuman Animator.
 - [[media-ingestion]] — Pipelines and tools for importing audio, music, podcasts, and video into the wiki.
