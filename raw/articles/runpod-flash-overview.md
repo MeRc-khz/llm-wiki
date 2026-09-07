@@ -1,0 +1,135 @@
+---
+source_url: https://docs.runpod.io/flash/overview
+ingested: 2026-08-24
+sha256: c0360212aa99f7564e92240e2694452a69790b9317a0ba0b74d0caeef8009745
+media_type: article
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.runpod.io/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Overview
+
+> Build autoscaling AI/ML apps using local code with Runpod Flash. Review setup, configuration, deployment, and usage guidance for Runpod Flash.
+
+<div className="overview-page-wrapper" />
+
+Flash is a Python SDK for developing cloud-native AI apps where you define everything—hardware, remote functions, and dependencies—using local code.
+
+```python theme={"theme":{"light":"github-light","dark":"github-dark"}}
+import asyncio
+from runpod_flash import Endpoint, GpuType
+
+# Mark the function below for remote execution
+@Endpoint(name="hello-gpu", gpu=GpuType.NVIDIA_GEFORCE_RTX_4090, dependencies=["torch"]) 
+async def hello(): # This function runs on Runpod
+    import torch
+    gpu_name = torch.cuda.get_device_name(0)
+    print(f"Hello from your GPU! ({gpu_name})")
+    return {"gpu": gpu_name}
+
+asyncio.run(hello())
+print("Done!") # This runs locally
+```
+
+Write `@Endpoint` decorated Python functions on your local machine. Run them, and Flash automatically handles GPU/CPU provisioning and worker scaling on [Runpod Serverless](/serverless/overview).
+
+## Get started
+
+<CardGroup cols={3}>
+  <Card title="Quickstart" href="/flash/quickstart" icon="bolt" horizontal>
+    Write a Flash script for instant access to Runpod GPUs.
+  </Card>
+
+  <Card title="Create endpoints" href="/flash/create-endpoints" icon="code" horizontal>
+    Learn how to create endpoints of various types.
+  </Card>
+
+  <Card title="Examples" href="https://github.com/runpod/flash-examples" icon="github" horizontal>
+    Browse example Flash scripts and apps on GitHub.
+  </Card>
+</CardGroup>
+
+## Setup
+
+<Note>
+  Flash requires a Runpod account with a verified email address.
+</Note>
+
+### Install Flash
+
+<Note>
+  Flash requires [Python 3.10, 3.11, 3.12, or 3.13](https://www.python.org/downloads/) and runs natively on macOS and Linux. Windows users can run Flash through [WSL2](/flash/windows-wsl2).
+</Note>
+
+Install Flash using `pip` or `uv`:
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+# Install with pip
+pip install runpod-flash
+
+# Or uv
+uv tool install runpod-flash
+```
+
+### Authentication
+
+Before you can use Flash, you need to authenticate with your Runpod account:
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash login
+
+# If using uv:
+uv run flash login
+```
+
+This saves your API key securely and allows you to use the Flash CLI and run `@Endpoint` functions.
+
+### Coding agent integration (optional)
+
+Install the Flash skill package for AI coding agents like Claude Code, Cline, and Cursor:
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+npx skills add runpod/runpod-plugins-official
+```
+
+You can review the `SKILL.md` file in the [runpod/runpod-plugins-official repository](https://github.com/runpod/runpod-plugins-official/blob/main/plugins/runpod/skills/flash/SKILL.md).
+
+## Flash apps
+
+When you're ready to move beyond scripts and build a production-ready API, you can create a [Flash app](/flash/apps/overview) (a collection of interconnected endpoints with diverse hardware configurations) and deploy it to Runpod.
+
+[Follow this tutorial to build your first Flash app](/flash/apps/build-app).
+
+## Flash CLI
+
+The Flash CLI provides a set of commands for managing your Flash apps and endpoints.
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash --help
+```
+
+[Learn more about the Flash CLI](/flash/cli/overview).
+
+## Limitations
+
+* Flash runs natively on macOS and Linux. Windows users can run Flash through [WSL2](/flash/windows-wsl2).
+* CPU endpoints are restricted to the `EU-RO-1` datacenter. GPU endpoints can deploy to [multiple datacenters](/flash/configuration/parameters#datacenter).
+* Flash can rapidly scale workers across multiple endpoints, and you may hit your maximum worker threshold quickly. Contact [Runpod support](https://www.runpod.io/contact) to increase your account's capacity if needed.
+
+## Tutorials
+
+<CardGroup cols={3}>
+  <Card title="Flash image generation" href="/tutorials/flash/image-generation-with-sdxl" icon="image" horizontal>
+    Build a GPU-accelerated image generation service.
+  </Card>
+
+  <Card title="Flash text generation" href="/tutorials/flash/text-generation-with-transformers" icon="message-bot" horizontal>
+    Deploy a text generation model on Runpod.
+  </Card>
+
+  <Card title="Flash REST API" href="/tutorials/flash/build-rest-api-with-load-balancer" icon="server" horizontal>
+    Create HTTP endpoints with load balancing.
+  </Card>
+</CardGroup>

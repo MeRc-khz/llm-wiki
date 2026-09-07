@@ -290,3 +290,16 @@
 - Updated content catalog: `index.md`
 - Cross-referenced: [[pkm]], [[agentic]], [[workflow]], [[methodology]]
 - Key innovations: certification-first domain model, shift self-selection replacing phone dispatch, multi-venue zone schematics, scheduler rule engine with OR-Tools, multi-tenant SaaS for agency resale
+
+## [2026-08-24] ingest | RunPod Flash Documentation (34 pages)
+- Source: https://docs.runpod.io/flash/overview (full Flash docs site, 34 .md pages)
+- Raw sources saved to `raw/articles/runpod-flash-*.md` (34 files, all with sha256 frontmatter)
+  - Overview, quickstart, create-endpoints, parameters, gpu-types, cpu-types, pricing, storage, best-practices, custom-docker, execution-model, troubleshooting
+  - Apps: overview, build-app, initialize-project, customize-app, local-testing, apps-and-environments, deploy-apps, requests
+  - CLI: overview, init, login, dev, build, deploy, env, app, undeploy, update
+  - Tutorials: text-generation-with-transformers, image-generation-with-sdxl, build-rest-api-with-load-balancer
+  - Windows WSL2 setup
+- Created entity page: `entities/runpod-flash.md` — full SDK reference: endpoint types (queue-based, load-balanced, custom Docker, existing), key parameters table, GPU pools & types, datacenters, pricing model, execution model, Flash apps lifecycle, storage, tutorials, limitations
+- Created concept page: `concepts/gpu-generation-endpoints.md` — patterns for writing custom GPU generation endpoints: SDXL image gen, REST API with load balancer, vLLM custom Docker, ComfyUI worker, GPU selection guide by model size, cost optimization, network volume model caching, HTTP request reference
+- Updated content catalog: `index.md` (43 pages total)
+- Cross-referenced: [[runpod-flash]] ↔ [[comfyui]] ↔ [[makeufamous]] ↔ [[gpu-generation-endpoints]]

@@ -1,0 +1,259 @@
+---
+source_url: https://docs.runpod.io/flash/cli/env
+ingested: 2026-08-24
+sha256: 2852dce51824ae9220941b33a348c63803c53a9a6043e5204553ed4a0055a710
+media_type: article
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.runpod.io/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# env
+
+Manage deployment environments for Flash applications. Environments are isolated deployment contexts (like `dev`, `staging`, `production`) within a Flash app.
+
+```bash Command theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash env <subcommand> [OPTIONS]
+```
+
+## Subcommands
+
+| Subcommand | Description                             |
+| ---------- | --------------------------------------- |
+| `list`     | Show all environments for an app        |
+| `create`   | Create a new environment                |
+| `get`      | Show details of an environment          |
+| `delete`   | Delete an environment and its resources |
+
+***
+
+## env list
+
+Show all available environments for an app.
+
+```bash Command theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash env list [OPTIONS]
+```
+
+### Example
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+# List environments for current app
+flash env list
+
+# List environments for specific app
+flash env list --app APP_NAME
+```
+
+### Flags
+
+<ResponseField name="--app, -a" type="string">
+  Flash app name. Auto-detected from current directory if not specified.
+</ResponseField>
+
+### Output
+
+```text theme={"theme":{"light":"github-light","dark":"github-dark"}}
+┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┓
+┃ Name       ┃ ID                  ┃ Active Build      ┃ Created At       ┃
+┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━┩
+│ dev        │ env_abc123          │ build_xyz789      │ 2024-01-15 10:30 │
+│ staging    │ env_def456          │ build_uvw456      │ 2024-01-16 14:20 │
+│ production │ env_ghi789          │ build_rst123      │ 2024-01-20 09:15 │
+└────────────┴─────────────────────┴───────────────────┴──────────────────┘
+```
+
+***
+
+## env create
+
+Create a new deployment environment.
+
+```bash Command theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash env create <NAME> [OPTIONS]
+```
+
+### Example
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+# Create staging environment
+flash env create staging
+
+# Create environment in specific app
+flash env create production --app APP_NAME
+```
+
+### Arguments
+
+<ResponseField name="NAME" type="string" required>
+  Name for the new environment (e.g., `dev`, `staging`, `production`).
+</ResponseField>
+
+### Flags
+
+<ResponseField name="--app, -a" type="string">
+  Flash app name. Auto-detected from current directory if not specified.
+</ResponseField>
+
+### Notes
+
+* If the app doesn't exist, it's created automatically.
+* Environment names must be unique within an app.
+* Newly created environments have no active build until first deployment.
+
+<Note>
+  You don't always need to create environments explicitly. Running `flash deploy --env <name>` creates the environment automatically if it doesn't exist.
+</Note>
+
+***
+
+## env get
+
+Show detailed information about a deployment environment.
+
+```bash Command theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash env get <NAME> [OPTIONS]
+```
+
+### Example
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+# Get details for production environment
+flash env get production
+
+# Get details for specific app's environment
+flash env get staging --app APP_NAME
+```
+
+### Arguments
+
+<ResponseField name="NAME" type="string" required>
+  Name of the environment to inspect.
+</ResponseField>
+
+### Flags
+
+<ResponseField name="--app, -a" type="string">
+  Flash app name. Auto-detected from current directory if not specified.
+</ResponseField>
+
+### Output
+
+```text theme={"theme":{"light":"github-light","dark":"github-dark"}}
+╭────────────────────────────────────╮
+│ Environment: production            │
+├────────────────────────────────────┤
+│ ID: env_ghi789                     │
+│ State: DEPLOYED                    │
+│ Active Build: build_rst123         │
+│ Created: 2024-01-20 09:15:00       │
+╰────────────────────────────────────╯
+
+           Associated Endpoints
+┏━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓
+┃ Name           ┃ ID                 ┃
+┡━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━┩
+│ my-gpu         │ ep_abc123          │
+│ my-cpu         │ ep_def456          │
+└────────────────┴────────────────────┘
+
+       Associated Network Volumes
+┏━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓
+┃ Name           ┃ ID                 ┃
+┡━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━┩
+│ model-cache    │ nv_xyz789          │
+└────────────────┴────────────────────┘
+```
+
+***
+
+## env delete
+
+Delete a deployment environment and all its associated resources.
+
+```bash Command theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash env delete <NAME> [OPTIONS]
+```
+
+### Examples
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+# Delete development environment
+flash env delete dev
+
+# Delete environment in specific app
+flash env delete staging --app APP_NAME
+```
+
+### Arguments
+
+<ResponseField name="NAME" type="string" required>
+  Name of the environment to delete.
+</ResponseField>
+
+### Flags
+
+<ResponseField name="--app, -a" type="string">
+  Flash app name. Auto-detected from current directory if not specified.
+</ResponseField>
+
+### Process
+
+1. Shows environment details and resources to be deleted.
+2. Prompts for confirmation (required).
+3. Undeploys all associated endpoints.
+4. Removes all associated network volumes.
+5. Deletes the environment from the app.
+
+<Warning>
+  This operation is irreversible. All endpoints, volumes, and configuration associated with the environment will be permanently deleted.
+</Warning>
+
+***
+
+## Environment states
+
+| State     | Description                          |
+| --------- | ------------------------------------ |
+| PENDING   | Environment created but not deployed |
+| DEPLOYING | Deployment in progress               |
+| DEPLOYED  | Successfully deployed and running    |
+| FAILED    | Deployment or health check failed    |
+| DELETING  | Deletion in progress                 |
+
+## Common workflows
+
+### Three-tier deployment
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+# Create environments
+flash env create dev
+flash env create staging
+flash env create production
+
+# Deploy to each
+flash deploy --env dev
+flash deploy --env staging
+flash deploy --env production
+```
+
+### Feature branch testing
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+# Create feature environment
+flash env create FEATURE_NAME
+
+# Deploy feature branch
+git checkout FEATURE_NAME
+flash deploy --env FEATURE_NAME
+
+# Clean up after merge
+flash env delete FEATURE_NAME
+```
+
+## Related commands
+
+* [`flash deploy`](/flash/cli/deploy) - Deploy to an environment
+* [`flash app`](/flash/cli/app) - Manage applications
+* [`flash undeploy`](/flash/cli/undeploy) - Remove specific endpoints

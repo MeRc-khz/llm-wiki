@@ -1,0 +1,139 @@
+---
+source_url: https://docs.runpod.io/flash/configuration/cpu-types
+ingested: 2026-08-24
+sha256: 04d1da16eec8c1046d435a433619ed5d8a8c2747f2a5d3766fdf3b273cdaddbf
+media_type: article
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.runpod.io/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# CPU types
+
+> Available CPU instance types for Flash endpoints. Review setup, configuration, deployment, and usage guidance for Runpod Flash.
+
+Flash provides access to CPU-only compute instances for workloads that don't require GPU acceleration. This reference lists all available CPU instance types.
+
+## Using CPU instances
+
+Specify a CPU instance using the `cpu` parameter. You can use either a string shorthand or the `CpuInstanceType` enum:
+
+```python theme={"theme":{"light":"github-light","dark":"github-dark"}}
+from runpod_flash import Endpoint, CpuInstanceType
+
+# String shorthand
+@Endpoint(name="data-processor", cpu="cpu5c-4-8")
+async def process(data: dict) -> dict:
+    ...
+
+# Using enum
+@Endpoint(name="data-processor", cpu=CpuInstanceType.CPU5C_4_8)
+async def process(data: dict) -> dict:
+    ...
+```
+
+## Available CPU instance types
+
+CPU instances are organized by generation and optimization profile.
+
+### 5th generation compute-optimized
+
+Latest generation, optimized for compute-intensive workloads:
+
+| CpuInstanceType | ID         | vCPU | RAM  | Best For                         |
+| --------------- | ---------- | ---- | ---- | -------------------------------- |
+| `CPU5C_1_2`     | cpu5c-1-2  | 1    | 2GB  | Lightweight APIs, simple tasks   |
+| `CPU5C_2_4`     | cpu5c-2-4  | 2    | 4GB  | Small APIs, data validation      |
+| `CPU5C_4_8`     | cpu5c-4-8  | 4    | 8GB  | General APIs, data processing    |
+| `CPU5C_8_16`    | cpu5c-8-16 | 8    | 16GB | Heavy processing, parallel tasks |
+
+### 3rd generation compute-optimized
+
+Balanced compute focus:
+
+| CpuInstanceType | ID         | vCPU | RAM  | Best For                  |
+| --------------- | ---------- | ---- | ---- | ------------------------- |
+| `CPU3C_1_2`     | cpu3c-1-2  | 1    | 2GB  | Basic endpoints, webhooks |
+| `CPU3C_2_4`     | cpu3c-2-4  | 2    | 4GB  | Simple data processing    |
+| `CPU3C_4_8`     | cpu3c-4-8  | 4    | 8GB  | Moderate workloads        |
+| `CPU3C_8_16`    | cpu3c-8-16 | 8    | 16GB | CPU-intensive tasks       |
+
+### 3rd generation general purpose
+
+Balanced CPU and memory:
+
+| CpuInstanceType | ID         | vCPU | RAM  | Best For                    |
+| --------------- | ---------- | ---- | ---- | --------------------------- |
+| `CPU3G_1_4`     | cpu3g-1-4  | 1    | 4GB  | Memory-light tasks          |
+| `CPU3G_2_8`     | cpu3g-2-8  | 2    | 8GB  | General workloads           |
+| `CPU3G_4_16`    | cpu3g-4-16 | 4    | 16GB | Memory-intensive processing |
+| `CPU3G_8_32`    | cpu3g-8-32 | 8    | 32GB | High-memory workloads       |
+
+## Common configurations
+
+### APIs and webhooks
+
+```python theme={"theme":{"light":"github-light","dark":"github-dark"}}
+# Lightweight API
+@Endpoint(name="webhook", cpu="cpu5c-2-4")
+async def handle_webhook(data: dict) -> dict:
+    ...
+
+# Production API
+@Endpoint(name="api", cpu="cpu5c-4-8", workers=(1, 10))
+async def handle_request(data: dict) -> dict:
+    ...
+```
+
+### Data processing
+
+```python theme={"theme":{"light":"github-light","dark":"github-dark"}}
+# Light processing
+@Endpoint(name="processor", cpu="cpu3g-2-8")  # More RAM per vCPU
+async def process(data: dict) -> dict:
+    ...
+
+# Heavy processing
+@Endpoint(name="heavy-processor", cpu="cpu5c-8-16")
+async def heavy_process(data: dict) -> dict:
+    ...
+```
+
+### Memory-intensive tasks
+
+```python theme={"theme":{"light":"github-light","dark":"github-dark"}}
+# High memory requirement
+@Endpoint(name="memory-worker", cpu="cpu3g-8-32")  # 8 vCPU, 32GB RAM
+async def process_large_data(data: dict) -> dict:
+    ...
+```
+
+### Load-balanced CPU API
+
+```python theme={"theme":{"light":"github-light","dark":"github-dark"}}
+from runpod_flash import Endpoint
+
+api = Endpoint(
+    name="cpu-api",
+    cpu="cpu5c-4-8",
+    workers=(1, 10)
+)
+
+@api.post("/process")
+async def process(data: dict) -> dict:
+    return {"result": "processed"}
+
+@api.get("/health")
+async def health():
+    return {"status": "ok"}
+```
+
+## Container disk sizing
+
+CPU endpoints automatically adjust container disk size based on instance limits:
+
+* `CPU3G` and `CPU3C` instances: vCPU count × 10GB (e.g., 2 vCPU = 20GB)
+* `CPU5C` instances: vCPU count × 15GB (e.g., 4 vCPU = 60GB)
+
+If you specify a custom size via `PodTemplate` that exceeds the instance limit, deployment will fail with a validation error.

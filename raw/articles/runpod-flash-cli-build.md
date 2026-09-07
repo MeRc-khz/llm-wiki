@@ -1,0 +1,216 @@
+---
+source_url: https://docs.runpod.io/flash/cli/build
+ingested: 2026-08-24
+sha256: 7c1ff99905ce93998cb7568c5b0389dc757f6284c1786bb2b3dc0468132babab
+media_type: article
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.runpod.io/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# build
+
+Build a deployment-ready artifact for your Flash application without deploying. Use this for more control over the build process or to inspect the artifact before deploying.
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash build [OPTIONS]
+```
+
+## Examples
+
+Build with all dependencies:
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash build
+```
+
+Build with additional excluded packages:
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash build --exclude scipy,pandas
+```
+
+Build with custom output name:
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash build -o my-app.tar.gz
+```
+
+## Flags
+
+<ResponseField name="--no-deps">
+  Skip transitive dependencies during pip install. Only installs direct dependencies specified in `@Endpoint` decorators. Useful when the base image already includes dependencies.
+</ResponseField>
+
+<ResponseField name="--output, -o" type="string" default="artifact.tar.gz">
+  Custom name for the output archive file.
+</ResponseField>
+
+<ResponseField name="--exclude" type="string">
+  Comma-separated list of packages to exclude from the build (e.g., `torch,torchvision`). Use this to skip packages already in the base image.
+</ResponseField>
+
+<ResponseField name="--python-version" type="string">
+  Target Python version for worker images (3.10, 3.11, 3.12, or 3.13). Overrides per-resource `python_version` declarations and local interpreter detection.
+</ResponseField>
+
+## What happens during build
+
+1. **Python version resolution**: Resolves the target Python version from CLI flag, resource configs, or your local interpreter.
+2. **Function discovery**: Finds all `@Endpoint` decorated functions.
+3. **Grouping**: Groups functions by their endpoint configuration.
+4. **Manifest generation**: Creates `.flash/flash_manifest.json` with endpoint definitions.
+5. **Source fingerprinting**: Computes a SHA-256 fingerprint of your source files to detect code changes between deployments.
+6. **Dependency installation**: Installs Python packages for Linux x86\_64.
+7. **Packaging**: Bundles everything into `.flash/artifact.tar.gz`.
+
+## Built-in ignore patterns
+
+Flash automatically excludes certain files and directories from deployment artifacts. These patterns cover common development files that shouldn't be deployed to production.
+
+| Category             | Patterns                                                                                                                           |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Build artifacts      | `.build/`, `.flash/`, `.runpod/`, `*.tar.gz`, `.git/`, `__pycache__/`, `*.pyc`, `*.pyo`, `*.pyd`, `*.egg-info/`, `dist/`, `build/` |
+| Virtual environments | `.venv/`, `venv/`, `env/`                                                                                                          |
+| IDE files            | `.vscode/`, `.idea/`                                                                                                               |
+| Environment files    | `.env`, `.env.local`                                                                                                               |
+| Tests                | `tests/`, `test_*.py`, `*_test.py`                                                                                                 |
+| Documentation        | `docs/`, `*.md` (except `README.md`)                                                                                               |
+
+Flash also respects your `.gitignore` file and excludes any files matching those patterns.
+
+<Tip>
+  If you use other environment file variants like `.env.dev` or `.env.staging`, add them to your `.gitignore` to exclude them from deployment artifacts.
+</Tip>
+
+### Local modules and the ignore filter
+
+Local (non-pip) modules that your endpoints import are bundled automatically, provided they pass the ignore filter: your `.gitignore` plus the built-in patterns listed above. During the build, Flash resolves the transitive local-import closure of every shipped Python file and checks it against the files the ignore filter already selected.
+
+If shipped code imports a local module that an ignore rule excludes (for example, a `test_*.py` sibling or a file under `tests/`), the build fails with a `LocalModuleResolutionError` instead of silently overriding your ignore rules or shipping a broken artifact. Flash names each excluded file and the file that imports it:
+
+```
+Shipped code imports local modules that the build ignore rules (.gitignore or built-in defaults) exclude:
+  utils/helpers.py (imported by endpoint.py)
+
+Shipping them would silently override a deliberate exclusion, and omitting them would break the worker with ModuleNotFoundError. Remove the matching ignore pattern or stop importing these modules from shipped code.
+```
+
+If an `@Endpoint` file has a local import Flash can't resolve at all (a broken relative import, or a file outside your project root), the build also fails with a clear error. A file that fails resolution but doesn't define an endpoint is skipped with a warning and the build continues. For details on how local imports are resolved and bundled, see [Import local modules](/flash/create-endpoints#import-local-modules).
+
+## Build artifacts
+
+After running `flash build`:
+
+| File/Directory               | Description                           |
+| ---------------------------- | ------------------------------------- |
+| `.flash/artifact.tar.gz`     | Deployment package ready for Runpod   |
+| `.flash/flash_manifest.json` | Service discovery configuration       |
+| `.flash/.build/`             | Build directory (kept for inspection) |
+
+## Cross-platform builds
+
+Flash automatically handles cross-platform builds:
+
+* **Automatic platform targeting**: Dependencies are installed for Linux x86\_64, regardless of your build platform.
+* **Binary wheel enforcement**: Only pre-built wheels are used, preventing compilation issues.
+
+### Python version in deployed workers
+
+Flash workers support Python 3.10, 3.11, 3.12, and 3.13. The target version is determined by:
+
+1. **CLI flag:** The `--python-version` flag takes precedence.
+2. **Resource config:** The `python_version` parameter on your endpoint configs.
+3. **Local interpreter:** Your local Python version (from `sys.version_info`) when neither is specified.
+
+All resources in a Flash app must use the same Python version because Flash ships a single tarball for the entire app. If resources declare conflicting versions, the build fails.
+
+<Warning>
+  **Breaking change in Flash 0.x:** Flash now matches your local Python version by default instead of always defaulting to Python 3.12. If you upgrade Flash and your local Python differs from 3.12, your first deploy will trigger a rolling release. To maintain consistent behavior across team members, declare `python_version` explicitly on your resource configs or use `--python-version` on the CLI.
+</Warning>
+
+| Version | Cold start     | Notes                                       |
+| ------- | -------------- | ------------------------------------------- |
+| 3.12    | No overhead    | PyTorch pre-installed in base image         |
+| 3.13    | +\~7 GB on GPU | Alternative Python install required         |
+| 3.11    | +\~7 GB on GPU | Alternative Python install required         |
+| 3.10    | +\~7 GB on GPU | EOL 2026-10-31; consider migrating to 3.11+ |
+
+If your local Python version is not supported (for example, 3.9 or 3.14), the build fails with an actionable error message listing the supported versions.
+
+Image tags follow the pattern `py{version}-{tag}` (for example, `runpod/flash:py3.12-latest`).
+
+## Managing deployment size
+
+Runpod Serverless has a **1.5GB deployment limit**. Flash automatically excludes packages that are pre-installed in the base image:
+
+* `torch`, `torchvision`, `torchaudio`, `triton`
+
+These packages are excluded at archive time, so you don't need to specify them manually.
+
+### Manual exclusions
+
+Use `--exclude` to skip additional packages that are already in a custom base image or not needed:
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash build --exclude scipy,pandas
+```
+
+### Base image reference
+
+| Resource type | Base image   | Auto-excluded packages                         |
+| ------------- | ------------ | ---------------------------------------------- |
+| GPU           | PyTorch base | `torch`, `torchvision`, `torchaudio`, `triton` |
+| CPU           | Python slim  | `torch`, `torchvision`, `torchaudio`, `triton` |
+
+<Tip>
+  Check the [worker-flash repository](https://github.com/runpod-workers/worker-flash) for current base images and pre-installed packages.
+</Tip>
+
+## Troubleshooting
+
+### Build fails with "functions not found"
+
+Ensure your project has `@Endpoint` decorated functions:
+
+```python theme={"theme":{"light":"github-light","dark":"github-dark"}}
+from runpod_flash import Endpoint, GpuGroup
+
+@Endpoint(name="my-worker", gpu=GpuGroup.ANY)
+def my_function(data):
+    return {"result": data}
+```
+
+### Archive is too large
+
+Some CUDA packages (`torch`, `torchvision`, `torchaudio`, `triton`) are auto-excluded. If the archive is still too large, use `--exclude` to skip additional packages or `--no-deps` to skip transitive dependencies:
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash build --exclude scipy,pandas
+```
+
+### Dependency installation fails
+
+If a package doesn't have Linux x86\_64 wheels:
+
+1. Ensure standard pip is installed: `python -m ensurepip --upgrade`
+2. Check PyPI for Linux wheel availability.
+
+### Need to examine generated files
+
+The build directory is kept after building. Inspect it with:
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+ls .flash/.build/
+```
+
+## Related commands
+
+* [`flash deploy`](/flash/cli/deploy) - Build and deploy in one step (includes `--preview` option for local testing)
+* [`flash dev`](/flash/cli/dev) - Start development server
+* [`flash env`](/flash/cli/env) - Manage environments
+
+<Note>
+  Most users should use `flash deploy` instead, which runs build and deploy in one step. Use `flash build` when you need more control or want to inspect the artifact.
+</Note>

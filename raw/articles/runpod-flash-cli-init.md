@@ -1,0 +1,134 @@
+---
+source_url: https://docs.runpod.io/flash/cli/init
+ingested: 2026-08-24
+sha256: d7cdde5aae6534d805cf333460fef8d6737b63054e9d582da8aacac32d5c7c34
+media_type: article
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.runpod.io/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# init
+
+Create a new Flash project with a ready-to-use template structure including a FastAPI server, example GPU and CPU workers, and configuration files.
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash init PROJECT_NAME [OPTIONS]
+```
+
+## Example
+
+Create a new project directory:
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash init PROJECT_NAME
+cd PROJECT_NAME
+pip install -r requirements.txt
+flash dev
+```
+
+Initialize in the current directory:
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+flash init .
+```
+
+## Arguments
+
+<ResponseField name="PROJECT_NAME" type="string" required>
+  Name of the project directory to create. Use `.` to initialize in the current directory.
+</ResponseField>
+
+## Flags
+
+<ResponseField name="--force, -f">
+  Overwrite existing files if they already exist in the target directory.
+</ResponseField>
+
+## What it creates
+
+The command creates the following project structure:
+
+<Tree>
+  <Tree.Folder name="PROJECT_NAME" defaultOpen>
+    <Tree.File name="lb_worker.py" />
+
+    <Tree.File name="gpu_worker.py" />
+
+    <Tree.File name="cpu_worker.py" />
+
+    <Tree.File name=".env.example" />
+
+    <Tree.File name=".gitignore" />
+
+    <Tree.File name="pyproject.toml" />
+
+    <Tree.File name="requirements.txt" />
+
+    <Tree.File name="README.md" />
+
+    <Tree.File name="AGENTS.md" />
+
+    <Tree.File name="CLAUDE.md" />
+  </Tree.Folder>
+</Tree>
+
+### Template contents
+
+* **lb\_worker.py**: load-balanced endpoint with HTTP routes. Contains `@Endpoint` functions with custom HTTP methods and paths (e.g., `POST /process`, `GET /health`). Multiple routes can share the same endpoint.
+* **gpu\_worker.py**: GPU queue-based endpoint. Contains an `@Endpoint` function that runs on GPU hardware. Provides `/run` or `/runsync` routes for job submission. Creates one Serverless endpoint when deployed.
+* **cpu\_worker.py**: CPU queue-based endpoint. Contains an `@Endpoint` function that runs on CPU-only instances. Provides `/run` or `/runsync` routes for job submission. Creates one Serverless endpoint when deployed.
+* **.env**: Template for environment variables including `RUNPOD_API_KEY`.
+
+### AI coding agent files
+
+Flash generates context files that help AI coding assistants (Claude Code, Cursor, GitHub Copilot, Codex, Aider, and others) use Flash correctly. These files tell agents to use Flash CLI commands instead of raw Runpod API calls.
+
+| File        | Purpose                                                                            |
+| ----------- | ---------------------------------------------------------------------------------- |
+| `AGENTS.md` | CLI-first rules for AI coding tools (Cursor, Codex, Aider, Amp, Jules, and others) |
+| `CLAUDE.md` | Symlink to `AGENTS.md` so Claude Code picks up the same rules                      |
+
+Flash writes these files only when they don't already exist. If you have your own `AGENTS.md` or `CLAUDE.md`, Flash leaves them alone.
+
+<Tip>
+  **Tools using other conventions:** GitHub Copilot reads `.github/copilot-instructions.md` and Cursor (legacy) reads `.cursorrules`. If you use those, symlink or copy `AGENTS.md`:
+
+  ```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+  ln -s ../AGENTS.md .github/copilot-instructions.md
+  ln -s AGENTS.md .cursorrules
+  ```
+</Tip>
+
+### Add agent files to existing projects
+
+If you've already run `flash init`, add the agent files with:
+
+```bash theme={"theme":{"light":"github-light","dark":"github-dark"}}
+python -c "from runpod_flash.rules import install_agent_files; from pathlib import Path; install_agent_files(Path.cwd())"
+```
+
+### Opt out
+
+Delete `AGENTS.md`. Flash won't re-create it.
+
+## Next steps
+
+After initialization:
+
+1. Copy `.env.example` to `.env` (if needed) and add your `RUNPOD_API_KEY`.
+2. Install dependencies: `pip install -r requirements.txt`
+3. Start the development server: `flash dev`
+4. Open [http://localhost:8888/docs](http://localhost:8888/docs) to explore the API.
+5. Customize the workers for your use case.
+6. Deploy with `flash deploy` when ready.
+
+<Note>
+  This command only creates local files. It doesn't interact with Runpod or create any cloud resources. Cloud resources are created when you run `flash dev` or `flash deploy`.
+</Note>
+
+## Related commands
+
+* [`flash dev`](/flash/cli/dev) - Start the development server
+* [`flash deploy`](/flash/cli/deploy) - Build and deploy to Runpod

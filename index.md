@@ -2,7 +2,7 @@
 
 > Content catalog. Every wiki page is listed under its type with a one-line summary.
 > Read this first to find relevant pages for any query.
-> Last updated: 2026-08-18 | Total pages: 41
+> Last updated: 2026-08-24 | Total pages: 43
 
 ## Entities
 - [[ballademix]] — A gamified Solana NFT collection featuring generative beats, cryptographic wallet hunts, and a video portal.
@@ -22,6 +22,7 @@
 - [[quantum-mechanix]] — Cyberpunk noir microdrama premise centered on Kirk Kilohertz and decentralized Fanbase distribution.
 - [[roachcoach]] — A Progressive Web Application (PWA) from Houston, TX, integrating GPS positioning and gamified food truck swiping.
 - [[the-conglomerate-group]] — The apex parent hold-co and philanthropic umbrella corporation managing all platform divisions, projects, and agent teams.
+- [[runpod-flash]] — Python SDK for cloud-native GPU/CPU AI/ML endpoints: auto-scaling workers, per-second billing, 4 endpoint patterns, 15 datacenters, GPU pools from 16GB to 180GB VRAM.
 - [[the-science-of-getting-rich]] — The Science of Getting Rich Audiobook & Skool Course Project.
 
 ## Concepts
@@ -43,6 +44,7 @@
 - [[tokenized-equity]] — A hybrid business and technical framework that fractionalizes asset ownership into legal-wrapped digital tokens.
 - [[unreal-mcp]] — Experimental Unreal Engine 5.8 plugin embedding an MCP server in-editor so AI agents can drive the editor via Tools.
 - [[ai-conversational-forms]] — Chat-based modal for bzr-dial-menu that captures form data step-by-step with inline form elements.
+- [[gpu-generation-endpoints]] — Patterns and recipes for writing custom GPU generation endpoints with RunPod Flash: SDXL, REST APIs, vLLM, ComfyUI, GPU selection guide, cost optimization.
 - [[lawnczar-agentic-route-planning]] — In-app LLM-optimized multi-stop itinerary rendering for LawnCzar using OSRM + agent stop ordering.
 - [[lawnczar-qr-referral-network]] — QR-powered crypto affiliate network: users get Solana wallets + QR codes, earn 5% commission on purchases from scanned referrals.
 - [[lawnczar-auto-region-provisioning]] — Auto-provisions self-hosted OSRM routing per zip code when affiliates sign up: osmium slice → osrm-extract → osrm-contract → Docker container.
