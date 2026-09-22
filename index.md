@@ -23,6 +23,7 @@
 - [[roachcoach]] — A Progressive Web Application (PWA) from Houston, TX, integrating GPS positioning and gamified food truck swiping.
 - [[the-conglomerate-group]] — The apex parent hold-co and philanthropic umbrella corporation managing all platform divisions, projects, and agent teams.
 - [[runpod-flash]] — Python SDK for cloud-native GPU/CPU AI/ML endpoints: auto-scaling workers, per-second billing, 4 endpoint patterns, 15 datacenters, GPU pools from 16GB to 180GB VRAM.
+- [[svgdad]] — Savage Dad streetwear storefront: Angular PWA at svgdad.store, dark street theme (Sunburn Orange/Earthy Tan), Shopify integration.
 - [[the-science-of-getting-rich]] — The Science of Getting Rich Audiobook & Skool Course Project.
 
 ## Concepts
