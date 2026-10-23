@@ -314,3 +314,20 @@
 - Updated: `index.md` (43 -> 46 pages), `entities/czarui.md`
 - Cross-referenced: bzr-dial-menu, bzr-ui-component-library, bzr-intro-component, czarui, makeufamous, ai-conversational-forms, buzz-czarui-integration, tokenized-equity, solana-anchor
 - Key design call: the advance rule races sequence-end+delay against content-ready. `advance-on="either"` is the literal spec and the default; `advance-on="both"` is offered because a boot cover that leaves before the app paints shows a blank screen. Flagged as an open question.
+
+## [2026-10-23] update | bzr-intro design resolved + phase 1 built
+- Advanced rule clarified by the client and implemented: `advance-delay` is a REPLAY INTERVAL
+  (clamped 2-10s), not a deadline. At the last frame the timer starts; if it lapses before the
+  page is ready the sequence replays. Unset = advance the instant content is ready.
+- Conflict found during implementation: "skip disabled until content is loaded" and "as soon as
+  content is loaded the component redirects" cannot both hold — the second makes Skip
+  unreachable (it enables and advances in the same tick). Resolved: content-ready advances
+  immediately only when `advance-delay` is unset; with an interval set it enables Skip and the
+  timer decides. Recorded in `concepts/bzr-intro-component.md`.
+- Updated: `concepts/bzr-intro-component.md` (advance-rule section)
+- Cleared the lint backlog: `entities/svgdad.md` frontmatter, 5 obsolete `[[comfyui]]` /
+  `[[mlops/inference]]` links unlinked (superseded by OpenRouter image models), and a bug in
+  `scripts/lint.py` that singularised "queries" into "querie" (`d[:-1]`).
+- Lint: 48 pages, no errors, no warnings.
+- Phase 1 built in `bzr-dial-menu` branch `bzr-intro-phase1` (commit 9625138): container,
+  video sequence sub-component, 30 tests.
