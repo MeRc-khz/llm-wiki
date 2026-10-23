@@ -18,6 +18,10 @@ The **czarui** system (synced with the production repository `git@github.com:MeR
 
 Features an **[[ai-conversational-forms|AI Conversational Forms]]** modal system — captures form data through chat-based step-by-step interaction with inline rendering of dropdowns, radios, switches, and date pickers in the chat window. 
 
+The library this system licenses — its shared conventions, licensing gate and Sequence
+contract — is catalogued in [[bzr-ui-component-library]], with [[bzr-dial-menu]] as the
+flagship member.
+
 This platform serves as **[[the-conglomerate-group|The Conglomerate Group's]]** primary web component monetization gateway, packaging our premium Web Audio/Video widgets into commercial license classes.
 
 ---

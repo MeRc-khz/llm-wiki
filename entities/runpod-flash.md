@@ -31,7 +31,7 @@ RunPod Flash is a Python SDK for developing cloud-native AI/ML applications wher
 
 ## Why It Matters
 
-For bzr-dial and Paperclip, Flash lets us write our own GPU generation endpoints (image generation, music generation, text-to-speech, etc.) without managing servers. We can deploy custom Python functions that run on NVIDIA GPUs, scale automatically, and bill per-second with no charges when idle. This is the infrastructure layer for any [[comfyui]] or [[makeufamous]] AI generation pipeline that needs to scale beyond the CPU-only server.
+For bzr-dial and Paperclip, Flash lets us write our own GPU generation endpoints (image generation, music generation, text-to-speech, etc.) without managing servers. We can deploy custom Python functions that run on NVIDIA GPUs, scale automatically, and bill per-second with no charges when idle. This is the infrastructure layer for any ComfyUI or [[makeufamous]] AI generation pipeline that needs to scale beyond the CPU-only server.
 
 ## Quick Start
 
@@ -308,7 +308,7 @@ Three official tutorials with complete code:
 
 ## Related Wiki Pages
 
-- [[comfyui]] — Currently CPU-only on our server; Flash could provide GPU-backed ComfyUI endpoints
+- ComfyUI — Currently CPU-only on our server; Flash could provide GPU-backed ComfyUI endpoints
 - [[makeufamous]] — AI audition judges could run as Flash GPU endpoints
 - [[gpu-generation-endpoints]] — Patterns for writing our own GPU generation endpoints with Flash
 - [[lawnczar]] — Potential GPU endpoints for map rendering or geospatial processing

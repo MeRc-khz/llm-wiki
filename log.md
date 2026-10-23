@@ -303,3 +303,14 @@
 - Created concept page: `concepts/gpu-generation-endpoints.md` — patterns for writing custom GPU generation endpoints: SDXL image gen, REST API with load balancer, vLLM custom Docker, ComfyUI worker, GPU selection guide by model size, cost optimization, network volume model caching, HTTP request reference
 - Updated content catalog: `index.md` (43 pages total)
 - Cross-referenced: [[runpod-flash]] ↔ [[comfyui]] ↔ [[makeufamous]] ↔ [[gpu-generation-endpoints]]
+- 2026-10-06: Created [[take-the-l]] entity page — new Web Works mobile game prototype (classification yard rush). Cross-linked from index.md.
+
+## [2026-10-23] ingest | bzr-intro component spec + bzr-ui component library
+- Source: Buzz message from Coupe, 2026-10-23T20:35:13Z, event 5d62ff03160c6a07b1c550b869ee862cab7c7664b067c88f79eccc7c31b5f5f9
+- Raw source: `raw/articles/bzr-intro-component-spec.md` (sha256 5165b904caf1c09d)
+- Created entity: `entities/bzr-dial-menu.md` — flagship component and library home (v1.0.1-mvp, Vite + Vitest, BZRD license gate, czarui issuance)
+- Created concept: `concepts/bzr-ui-component-library.md` — library conventions (native custom element, attribute-driven, license/watermark, zero deps) + container/sub-component pattern + Sequence contract + format capability matrix
+- Created concept: `concepts/bzr-intro-component.md` — full spec: attributes, advance rule, three content-ready signals, events incl. `bzr-intro-remove` handoff, 11-step implementation plan, open questions
+- Updated: `index.md` (43 -> 46 pages), `entities/czarui.md`
+- Cross-referenced: bzr-dial-menu, bzr-ui-component-library, bzr-intro-component, czarui, makeufamous, ai-conversational-forms, buzz-czarui-integration, tokenized-equity, solana-anchor
+- Key design call: the advance rule races sequence-end+delay against content-ready. `advance-on="either"` is the literal spec and the default; `advance-on="both"` is offered because a boot cover that leaves before the app paints shows a blank screen. Flagged as an open question.

@@ -1,10 +1,22 @@
+---
+title: svgdad
+created: 2026-09-22
+updated: 2026-10-23
+type: entity
+tags: [monetization, workflow]
+sources: [raw/articles/savage-dad-style-guide.md]
+confidence: medium
+contested: false
+contradictions: []
+---
+
 # Savage Dad / SvgDad (svgdad)
 
-Entity: Savage Dad apparel storefront brand of The Conglomerate Group.
+Entity: Savage Dad apparel storefront brand of [[the-conglomerate-group|The Conglomerate Group]].
 
 ## Domains & Deploy
 - `svgdad.store`, `svgdad.shop` (GoDaddy) → nginx `svgdad.conf` → `/var/www/svgdad/html`
-- App repo: `/srv/projects/REPOS/svgdad` (Angular CLI PWA + Material 3, NgRx, lazy features, service worker)
+- App repo: `/srv/projects/REPOS/svgdad` — design system catalogued in [[savage-dad-style-guide]] (Angular CLI PWA + Material 3, NgRx, lazy features, service worker)
 - Shopify store: `if3711-4m.myshopify.com` (Shop name: svgXdad), org 236229955
 - See [[domain-portfolio]] for registry entry.
 

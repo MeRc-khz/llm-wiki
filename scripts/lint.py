@@ -84,9 +84,9 @@ def lint():
                         errors.append(f"[{d}/{file}] Missing required frontmatter field: '{req}'")
 
                 # Validate Type
-                expected_type = d[:-1]
-                if d == "entities":
-                    expected_type = "entity"
+                # d[:-1] mangles "queries" into "querie"; map explicitly
+                expected_type = {"entities": "entity", "concepts": "concept",
+                                 "comparisons": "comparison", "queries": "query"}[d]
                 if meta.get("type") != expected_type:
                     warnings.append(f"[{d}/{file}] type '{meta.get('type')}' does not match folder '{d}'")
 

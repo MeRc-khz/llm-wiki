@@ -16,6 +16,8 @@ contradictions: []
 
 ---
 
+> **Intro component:** the landing page's intro sequence was generalised into [[bzr-intro-component]] — the second component of [[bzr-ui-component-library|the bzr-ui library]]. This site is its first consumer.
+
 ## 🏗️ Core Features & Architecture
 
 According to the [landing page data](raw/articles/makeufamous-landing.md), the system is structured as an interactive single-page application built with modern serverless and agentic layers:

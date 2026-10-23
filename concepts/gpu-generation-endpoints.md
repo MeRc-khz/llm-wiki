@@ -179,7 +179,7 @@ await job.wait()
 print(job.output)
 ```
 
-This gives us GPU-backed ComfyUI as a scalable endpoint, complementing our existing CPU-only [[comfyui]] setup on the server.
+This gives us GPU-backed ComfyUI as a scalable endpoint, complementing our existing CPU-only ComfyUI setup on the server.
 
 ## GPU Selection Guide
 
@@ -279,6 +279,6 @@ curl -X POST https://{endpoint_id}.api.runpod.ai/generate \
 ## Related Wiki Pages
 
 - [[runpod-flash]] — Full entity page with complete parameter reference, datacenters, and CLI
-- [[comfyui]] — Current CPU-only ComfyUI setup that could be GPU-accelerated via Flash
+- ComfyUI — Current CPU-only ComfyUI setup that could be GPU-accelerated via Flash
 - [[makeufamous]] — AI audition judges as Flash GPU endpoints
-- [[mlops/inference]] — vLLM serving and quantization patterns
+- vLLM serving and quantization patterns — vLLM serving and quantization patterns

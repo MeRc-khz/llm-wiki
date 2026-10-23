@@ -2,10 +2,11 @@
 
 > Content catalog. Every wiki page is listed under its type with a one-line summary.
 > Read this first to find relevant pages for any query.
-> Last updated: 2026-08-24 | Total pages: 43
+> Last updated: 2026-10-23 | Total pages: 46
 
 ## Entities
 - [[ballademix]] — A gamified Solana NFT collection featuring generative beats, cryptographic wallet hunts, and a video portal.
+- [[bzr-dial-menu]] — Flagship bzr-ui Web Component: viewport-edge radial dial replacing dropdowns; the library's first shipped member.
 - [[buzz]] — Self-hostable Nostr relay workspace by Block, Inc. where humans and AI agents collaborate as equals. Replaces Discord for bzr-dial community management.
 - [[ballademix-intro-nft]] — The flagship Solana audio NFT derived from Intro.mp3, featuring a 1:1,000 rarity tier and cooperative video unlock.
 - [[bizarre-lynx]] — Cryptographically signed AIEOS v1.2 digital twin, G-Funk rap icon, and African American cultural curator.
@@ -15,6 +16,7 @@
 - [[lawnczar]] — Geocentric PWA marketplace for yard sales and local community commerce.
 - [[makeufamous]] — A decentralized digital-first online talent show with interactive AI Audition Judges.
 - [[makeufamous-theme-song]] — The official R&B/Hip-Hop theme track ("Make U Famous") for the talent platform.
+- [[take-the-l]] — Mobile classification-yard train game prototype (single-file HTML5, headed to app stores).
 - [[metahuman]] — Epic's digital-human technology (5 yrs, 8M+ generated): Creator, Mesh-to-MetaHuman, Animator, DevKit (DNA + Open Rig Logic), crowds, and AI roadmap.
 - [[neurocanvas]] — A spatial canvas-based local and mobile wiki editor built with React and Tauri v2.
 - [[ntrafx-podcast]] — An audio series focusing on personal freedom, psychology, and structural efficiency.
@@ -27,6 +29,8 @@
 - [[the-science-of-getting-rich]] — The Science of Getting Rich Audiobook & Skool Course Project.
 
 ## Concepts
+- [[bzr-intro-component]] — Second bzr-ui component: sequence-file intro overlay (mp4/gif/mjpeg/canvas) with play/pause/loop/scrub/skip and a content-ready advance rule.
+- [[bzr-ui-component-library]] — The dependency-free Web Component library: shared conventions, the container/sub-component split, and the Sequence contract.
 - [[agent-skills]] — The open Agent Skills standard and Unreal's native UAgentSkill: distilled, non-inherent knowledge for AI agents (novel, collegial, durable, parsimonious).
 - [[aieos-integration]] — Standardizing AI Agent identities, capabilities, and cognitive profiles using the AIEOS schema in Paperclip.
 - [[buzz-czarui-integration]] — Phased plan to replace Discord with Buzz as the bzr-dial community platform: relay deployment, channel structure, Stripe webhooks, agent registration, git-native dev, and on-chain revenue visibility.
