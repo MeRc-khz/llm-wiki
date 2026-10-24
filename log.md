@@ -363,3 +363,11 @@
 - Cadence locked M/W/F, 24 slots, 2026-10-26 → 2026-12-18; 9:16 vertical only until revenue.
 - Revised cost ≈$30.42 for the run (22 segments + two 30 s windows from 17a/17b).
 - Slot map: `PLANS/BZRLNX_DROP_SCHEDULE.md`; account kit: `OUTBOX/BZRLNX_ACCOUNT_KIT.md`.
+
+## [2026-10-24] update | BzrLnx clip furniture v2 + closing rule
+- Persistent store pill added top-right for the whole clip (svgdad.store) on top of the end card —
+  most viewers never reach the tail, so a tail-only CTA monetizes almost nobody.
+- Counter rule clarified: the stamp is the **drop/assembly index**, not the source filename
+  (segment_02 = 01/24, segment_03 = 02/24). 17a/17b share the stamp "17" as one split stem.
+- Caption policy: never quote violent bars; IG/TikTok suppress reach and can age-restrict.
+- Second render verified: `segment_03` (29.7 s, $1.483); running model spend $2.84.
