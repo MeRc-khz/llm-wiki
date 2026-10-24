@@ -371,3 +371,15 @@
   (segment_02 = 01/24, segment_03 = 02/24). 17a/17b share the stamp "17" as one split stem.
 - Caption policy: never quote violent bars; IG/TikTok suppress reach and can age-restrict.
 - Second render verified: `segment_03` (29.7 s, $1.483); running model spend $2.84.
+
+## [2026-10-24] create | BzrLnx censorship + on-screen lyric pipeline
+- Word-level ASR (faster-whisper `word_timestamps=True`) is the substrate — phrase-level transcripts
+  are too coarse to bleep individual words.
+- Bleep baked into the audio **before** the Avatar IV render so the mouth never forms the word;
+  duration-preserving so every downstream timing holds. Verified post-render: redacted spans 99%
+  1 kHz band energy vs 4% on un-redacted vocal controls.
+- Done in numpy, not ffmpeg `volume=enable=` (the enable gate leaked the tone across the file).
+- Client-facing artifact is a plain-text **lyric sheet** (`<< >>` = bleep + black-bar), not JSON.
+- Two cost tiers: text/bar-only edits reuse the render (free); changing which words are bleeped
+  needs a new render ($0.05/s).
+- Reference: `references/censorship-and-lyrics.md` in the `shortform-social-campaigns` skill.
