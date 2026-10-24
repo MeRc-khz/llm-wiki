@@ -2,7 +2,7 @@
 
 > Content catalog. Every wiki page is listed under its type with a one-line summary.
 > Read this first to find relevant pages for any query.
-> Last updated: 2026-10-23 | Total pages: 46
+> Last updated: 2026-10-24 | Total pages: 47
 
 ## Entities
 - [[ballademix]] — A gamified Solana NFT collection featuring generative beats, cryptographic wallet hunts, and a video portal.
@@ -10,6 +10,7 @@
 - [[buzz]] — Self-hostable Nostr relay workspace by Block, Inc. where humans and AI agents collaborate as equals. Replaces Discord for bzr-dial community management.
 - [[ballademix-intro-nft]] — The flagship Solana audio NFT derived from Intro.mp3, featuring a 1:1,000 rarity tier and cooperative video unlock.
 - [[bizarre-lynx]] — Cryptographically signed AIEOS v1.2 digital twin, G-Funk rap icon, and African American cultural curator.
+- [[bzrlnx-paperchasers-campaign]] — 24-clip short-form video campaign turning the Paperchasers segments into photo+lipsync talking-heads with an n/24 serial counter and the MakeUFamo.us intro sting.
 - [[czarui]] — The bzr-dial Stripe-integrated licensing engine, monetization funnel, and IPFS distribution hub.
 - [[domain-portfolio]] — The complete registry of GoDaddy and AWS domains routed through our Nginx reverse proxy.
 - [[furious-styles-coupe-da-villian]] — Primary rap persona (Furious Styles / Coupe da Villian) behind Bizarre Lynx's source voice; the Paperchasers master recording.

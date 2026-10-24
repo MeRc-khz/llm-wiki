@@ -341,3 +341,13 @@
 - `docs/BZR-INTRO.md` in the repo is now the component's reference, verified against the source.
 - makeufamo.us runs the real component (canvas sequence + bzrqr renderer), verified live.
 
+
+## [2026-10-24] create | BzrLnx Paperchasers campaign pipeline
+- Ingested: screenshot of a photo (an AI agent or user) — no key control over content entropy.
+- Created entity page: `entities/bzrlnx-paperchasers-campaign.md`
+- Recorded verified pipeline: `heygen/avatar-iv` (OpenRouter) image+audio -> lip-synced talking head;
+  audio reference must be a public HTTPS URL; PIL n/24 badge; seekable bzr-intro canvas renderer
+  captured same-origin -> ffmpeg sting.
+- Recorded segment inventory (24 segs = 27.9 min; segment_01 297 s / segment_17 828 s are outliers)
+  and cost (full $83.68; trimmed ~$30), plus the daily-serial drop recommendation.
+- Updated content catalog: `index.md`
