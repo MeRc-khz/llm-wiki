@@ -331,3 +331,13 @@
 - Lint: 48 pages, no errors, no warnings.
 - Phase 1 built in `bzr-dial-menu` branch `bzr-intro-phase1` (commit 9625138): container,
   video sequence sub-component, 30 tests.
+
+## [2026-10-24] update | bzr-intro implemented — all four sequence formats
+- Status section added to `concepts/bzr-intro-component.md`: what shipped, the two design points
+  that changed on contact with the code, the format matrix as built, and the honest GIF caveat.
+- New sequence types: `bzr-intro-seq-mjpeg` (numbered JPEG frame list, exact seeking) and
+  `bzr-intro-seq-gif` (ImageDecoder path, and a documented fallback where seeking is impossible).
+- The contract gained `load(src, config)` so formats can take extra settings.
+- `docs/BZR-INTRO.md` in the repo is now the component's reference, verified against the source.
+- makeufamo.us runs the real component (canvas sequence + bzrqr renderer), verified live.
+

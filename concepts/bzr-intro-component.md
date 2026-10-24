@@ -204,3 +204,59 @@ content-ready), redirect fires on skip as well as completion, and sound gets an 
 - [[bzr-dial-menu]] — the first component; shares licensing and conventions
 - [[czarui]] — license issuance and the commercial funnel
 - [[makeufamous]] — the site running the prototype of this component
+
+---
+
+## Implementation status — 2026-10-24
+
+**Built and shipped.** Repo `bzr-dial-menu`, branch `bzr-intro-phase1`, commits `9625138` (phase 1),
+`ac1c68f` (canvas sequence + take-control), `6d02385` (gif + mjpeg + config handoff), `8f142cc`
+(docs). **76 tests**, full suite green. Live on makeufamo.us.
+
+### What shipped, against the design above
+
+| Piece | State |
+|---|---|
+| `bzr-intro` container | done — transport, advance rule, take-control, licensing, three readiness signals |
+| `bzr-intro-seq-video` | done — mp4/webm/ogv/mov, muted+playsinline as *properties* |
+| `bzr-intro-seq-canvas` | done — registered renderer, `draw(ctx, p, env)` pure in p |
+| `bzr-intro-seq-mjpeg` | done — numbered JPEG frame list, exact seeking, bounded-concurrency preload |
+| `bzr-intro-seq-gif` | done — two paths, see below |
+| `redirect` on skip | done — fires on natural completion *and* skip |
+| unmute button | done — audio starts muted, the chrome grows the control when `sound` is set |
+
+### Two design points that changed on contact with the code
+
+1. **The content-ready asymmetry is required, not optional.** As predicted above, "skip disabled
+   until content loads" and "advance as soon as content loads" cannot both hold: Skip would enable
+   and the component leave in the same tick. Resolved as predicted — with `advance-delay` unset,
+   content-ready advances; with it set, content-ready only enables Skip and the timer decides.
+   **This is what gives Skip a purpose.**
+
+2. **A fourth rule was added, from the client:** any transport interaction (play/pause, loop,
+   unmute, scrub, spacebar, clicking the artwork) sets `_userControl`. From then on auto-advance
+   and the replay interval are both cancelled and Skip is the only way out. An explicit loop is
+   still honoured. The intro stops being a cover and becomes a player.
+
+### The format matrix, as actually built
+
+| Format | Seekable | Note |
+|---|---|---|
+| `canvas` | yes | frame is a function of p |
+| `video` | yes | mp4/webm |
+| `mjpeg` | **exactly** | every frame addressable — the best scrubbing available |
+| `gif` | only with `ImageDecoder` | see below |
+
+**GIF is the one honest caveat.** With `ImageDecoder` (Chromium) the frames decode, the duration is
+*measured* and seeking is exact. Without it (Firefox, Safari) a GIF cannot be entered from JS at
+all — the `<img>` animates itself. So `seekable` is false, the scrubber renders **disabled in
+place**, `pause()` cannot stop the picture, and duration comes from an attribute. That is a
+property of the format; the answer for anyone who needs a reliable transport is mp4/webm or a
+JPEG frame list.
+
+### `load(src, config)`
+
+The contract gained a second argument: the container's own attributes as a plain object. A format
+takes the extra settings it needs (`frames`, `fps`, `start`, `duration`) without the container
+learning any format-specific concept. Written up in `docs/BZR-INTRO.md`.
+
