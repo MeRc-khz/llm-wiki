@@ -351,3 +351,15 @@
 - Recorded segment inventory (24 segs = 27.9 min; segment_01 297 s / segment_17 828 s are outliers)
   and cost (full $83.68; trimmed ~$30), plus the daily-serial drop recommendation.
 - Updated content catalog: `index.md`
+
+## [2026-10-24] update | BzrLnx campaign strategy additions
+- Added the stem-reassembly mechanic: each clip is a stem of "Paperchasers — I Know Why" ([[ballademix]]);
+  the n/24 stamp is both serial hook and assembly index.
+- Recorded: `segment_01` = finished song, not posted, becomes the BalladeMix Solana NFT;
+  `segment_17` = beat+drums (828 s) split into 17a/17b in Audacity, which keeps the drop set at 24.
+- NFT cover art = composite of the talking-portrait videos.
+- svgdad.store is the monetization surface: end card on every clip + store link in every caption;
+  IG/TikTok captions are non-clickable so their bio link is the whole funnel.
+- Cadence locked M/W/F, 24 slots, 2026-10-26 → 2026-12-18; 9:16 vertical only until revenue.
+- Revised cost ≈$30.42 for the run (22 segments + two 30 s windows from 17a/17b).
+- Slot map: `PLANS/BZRLNX_DROP_SCHEDULE.md`; account kit: `OUTBOX/BZRLNX_ACCOUNT_KIT.md`.

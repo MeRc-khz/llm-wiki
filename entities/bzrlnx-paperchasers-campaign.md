@@ -47,10 +47,39 @@ $0.05/s is **$83.68**; with 01 and 17 trimmed to ~30 s each it is **≈$30**. Bu
 
 ## Scheduling
 
-The `n/24` counter is a countdown device: a **daily serial drop** (one clip/day for 24 days at a
-fixed slot) converts far better than a bulk dump, because every clip ends with a reason to follow
-the next. Recommended slot **18:00 PT / 21:00 ET** for TikTok + Reels; X mornings 09:00–12:00 PT.
-Cross-post natively (no watermark), 15–30 min apart per platform.
+The `n/24` counter is a countdown device: a **serial drop converts far better than a bulk dump**,
+because every clip ends with a reason to follow the next. (First recommendation was daily; the
+agreed cadence is M/W/F — see below.)
+
+## Strategy — the stem-reassembly mechanic
+
+Every posted clip is a **stem of the record "Paperchasers — I Know Why"** in the
+[[ballademix]] project, not a standalone video. The premise: a viewer who collects all 24 clips —
+pulls the audio into a DAW, or sequences the video — can **reassemble the original song**. The
+`n/24` counter is therefore doing double duty: it is the serial hook *and* the assembly index. Drop
+order is song order, so the numbering must stay faithful to the stems.
+
+Consequences that constrain production:
+
+- `segment_01` is the **finished full song** and is never posted. It becomes the BalladeMix Solana
+  NFT.
+- `segment_17` is the beat + drums (828 s), split by Coupe into `17a` / `17b` in Audacity. One slot
+  becomes two, which is what keeps the drop set at exactly 24 after `01` is removed.
+- The **NFT cover art is a composite of the talking-portrait videos** — the campaign's visual output
+  is also the NFT's artwork source, so clip framing is NFT art, not just social content.
+- **svgdad.store is the monetization surface.** Every clip ends on an `svgdad.store` end card and
+  every caption carries the store. IG and TikTok captions are not clickable, so the bio link is the
+  entire funnel on those two platforms.
+
+## Scheduling
+
+M/W/F, one clip per drop day — **24 slots = 8 weeks**, 2026-10-26 → 2026-12-18, slot
+**18:00 PT / 21:00 ET**, X at 09:00–12:00 PT. Photos are curated per-drop-day rather than
+pre-paired, and all output is **9:16 vertical only** until svgdad.store revenue funds other formats.
+Slot map and calendar live in `PLANS/BZRLNX_DROP_SCHEDULE.md`; account kit in
+`OUTBOX/BZRLNX_ACCOUNT_KIT.md`.
+
+Cost, revised: 22 segments (548.4 s) + two 30 s windows from 17a/17b = **≈$30.42** for the run.
 
 ## Related
 
