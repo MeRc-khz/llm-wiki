@@ -343,7 +343,7 @@
 
 
 ## [2026-10-24] create | BzrLnx Paperchasers campaign pipeline
-- Ingested: screenshot of a photo (an AI agent or user) — no key control over content entropy.
+- Ingested: Paperchasers segment inventory (24 wavs) + verified OpenRouter video-model capability scan.
 - Created entity page: `entities/bzrlnx-paperchasers-campaign.md`
 - Recorded verified pipeline: `heygen/avatar-iv` (OpenRouter) image+audio -> lip-synced talking head;
   audio reference must be a public HTTPS URL; PIL n/24 badge; seekable bzr-intro canvas renderer
