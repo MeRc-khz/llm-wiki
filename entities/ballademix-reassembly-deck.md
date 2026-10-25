@@ -85,6 +85,19 @@ are deliberately `17a BEAT+DRUMS A` / `17b BEAT+DRUMS B`, not "beat sample" / "d
 two halves of one bed by two instrument names would misdescribe what plays. Swap in real separated stems
 and relabel once they exist.
 
+## Game layer (2026-10-25)
+
+- **Format:** 26 stems as 80 kbps mono mp3 — **106.5 MB -> 25.0 MB**. Sealed lanes are not fetched at all.
+- **Master template:** where each stem belongs on the timeline. Seeded from envelope cross-correlation
+  (mean 0.33 — honesty required), per-stem confidence stored, and **calibratable in-deck**: drag by ear,
+  `SAVE POSITION`, persisted in localStorage. Lag-0 and lyric-matching were both tried and falsified —
+  `segment_01` has only 57 words in 297 s, so the master is nearly all instrumental.
+- **Mechanics:** ghost marker at the target; glow within 5 s; green inside 1.2 s; release snaps exactly
+  and stamps the lane SOLVED; footer keeps score (`n/24 placed`).
+- **Identity:** lanes named by assembly position (`01/24`), each with its social image as a thumbnail
+  cell; an in-lane video plays when the playhead crosses a clip that has a finished cut.
+- **Test-run drawer:** shipped clips beside the makeufamo.us test runs, side by side.
+
 ## Fixed during bring-up
 
 - **The clock reported the wrong master length** — `0:00.000 / 4` instead of `/ 4:57`. The formatter

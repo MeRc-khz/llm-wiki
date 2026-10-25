@@ -442,3 +442,50 @@ balance**, so direct API posting is dead until it is funded):
   approved X captions and the v3 clips. One word flips them live.
 - Client: `.scratch/bzrlnx-campaign/scripts/bufferpost.py` (`whoami|channels|posts|queue|draft|delete|publish`).
 - Key stored at `/root/.secrets/buffer.env` (0600) — posted in the public channel, **rotate when done**.
+
+## [2026-10-25] update | Deck becomes a game: mp3, thumbnails, template snapping, test-run drawer
+
+Coupe's follow-up on the reassembly deck (`ballademicz.com/daw/` — spelling confirmed):
+"implement the rest of the working scope... more of a game simulation of working in a DAW".
+
+**Load time.** All 26 stems re-encoded to 80 kbps mono mp3 at 32 kHz: **106.5 MB -> 25.0 MB (24%)**.
+`AUDIO_EXT` in the manifest is the single switch; `decodeAudioData` handles either. Note mp3 carries a
+small encoder delay, which is why the snap threshold is ~1 s and not sample-exact.
+Sealed (undropped) lanes are **not fetched at all** — `srcs` filters `t.pending` — so an unreleased
+stem is never shipped to the browser just to sit silent in a lane.
+
+**Master template, and why it is a starting point not gospel.** Tried three ways to derive where each
+stem belongs on the 297.3 s timeline:
+1. *Envelope cross-correlation* vs `segment_01` — mean 0.33; only `segment_06` (0.92) and `segment_17a`
+   (0.73) are strong. Used as the seed, with a per-stem confidence value.
+2. *Lag-0* (the "they are all layers starting together" hypothesis) — lost on all 22 stems. Falsified.
+3. *Lyric matching* via the word-level transcripts — fails because `segment_01` has only **57 words**
+   in 297 s: the master is almost entirely instrumental, so there is almost no shared lyric to match on.
+So the template ships seeded + **calibratable**: drag a clip by ear, `SAVE POSITION`, and it is stored in
+localStorage (`bzrlnx.deck.template.v1`). `RESET TEMPLATE` falls back to the seed. This is how the real
+template gets authored — in the tool, by ear.
+
+**Game mechanics.** A dashed ghost marks each clip's template position. Dragging within **5 s** starts a
+glow that intensifies with proximity; inside **1.2 s** the clip goes green and the footer says
+`LOCKED IN RANGE — release to snap`. Release inside the threshold and it snaps to the template exactly,
+turns solid green, stamps the lane `SOLVED`, and the footer score ticks (`n/24 placed`).
+
+**Per-lane identity.** Lanes are named by assembly position (`01/24` … `24/24`), not by filename.
+Each carries its social image as a thumbnail cell at the head of the clip; drop `<id>.jpg` into
+`daw/thumbs/` and it is picked up with no code change (only 01/02/03 exist, rest fall back to the avatar).
+When the playhead is inside a clip that has a finished video, that video plays **in the lane**, synced to
+the timeline.
+
+**Test-run drawer** (`TEST RUNS` in the footer): the two shipped clips beside the four makeufamo.us test
+runs and the intro sting, all playing side by side for the "which treatment is more fun" comparison.
+
+**Bug caught by looking at the render, not by the tests:** sealed lanes were labelled `01 MASTER (locked)`
+because the label branch keyed off `t.locked`, and sealing a lane sets `locked = true`. Now keyed off
+`t.kind === "master"`. A data-only check would never have surfaced this — the screenshot did.
+
+Verified headless after the change: 25/25 decode from mp3, clock `0:00.000 / 4:57`, `?today=2026-11-05`
+opens exactly slots 1-5 and seals 19, `dragTo('segment_02', 259.9)` -> glow 0.82 / inSnap true, release ->
+`at 260.8 = template`, score `1/24`. `node --check` clean on the 1355-line script.
+
+**Inputs used:** Coupe's own Audacity splits in `Media/` (267.45 s / 560.04 s) — independently measured
+here at the 267.0 s energy step, so those agree.
