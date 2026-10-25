@@ -489,3 +489,36 @@ opens exactly slots 1-5 and seals 19, `dragTo('segment_02', 259.9)` -> glow 0.82
 
 **Inputs used:** Coupe's own Audacity splits in `Media/` (267.45 s / 560.04 s) — independently measured
 here at the 267.0 s energy step, so those agree.
+
+## [2026-10-25] update | Owner-edited lyric sheets: 2/3 of redactions were about to ship un-bleeped
+
+Coupe finished editing all 24 sheets (`OUTBOX/bzrlnx-lyrics`, 20:50-22:13). Diffed every one
+against the pristine emit in `Media/bzrlnx-campaign/lyrics/`.
+
+**His edit:** armed redactions **28 -> 38**. Added `hoes`+`fucked` (10, 11, 17), `fuckin'` (14),
+`tec 9,` (15), `bitch'` (19). Un-barred `tag`, `9,`, `suppressin' fire` in segment_03 — so that
+line now reads "you staring at the muzzle of a tech 9" fully legible on screen, while segment_15
+bars `tec 9,`. Same class of content, opposite treatment; flagged to him as his call, plus the
+consequence that slot 02 is already rendered *with* those bars, so the sheet and the live clip now
+disagree. Text corrected by ear throughout ("Gaurd your grill", "I'm bout my cabbage", "street
+militia") — his fixes over the ASR, and now the on-screen copy.
+
+**The defect.** 24 of the 38 requested redactions were **unmatchable in the word stream** — the ASR
+never wrote `hoes`, `tec 9,`, `bitch'` at all. `find_span` returned None and `build_lines` dropped
+them silently: the word would have played in the clear while the clip still looked censored. That is
+the same failure class that nearly shipped a live gun reference, and the only one where the video
+lies to the client.
+
+**Fix** — `scripts/sheetbleep.py`: exact ASR match first (sample-accurate when the transcript
+agrees), else fall back to the barred word's position inside the owner's own line window,
+proportional by word index (`line_start + i/N*(line_end-line_start)`), floored at 0.12 s so a
+zero-width bleep can never be emitted. Measured rather than assumed on segment_10:
+`<<hoes>>` 13.70-13.88 s [sheet timing] 1 kHz band 0.4% -> **100%**; `<<fucked>>` 20.78-21.12 s
+[asr] 13.3% -> **100%**; controls ~10-15%.
+
+Also validated: no malformed lines, no backwards timings. One zero-length line fixed
+(`segment_21` `15.88|15.88` -> `15.88|16.20`).
+
+**Lesson recorded** in the skill (`references/censorship-and-lyrics.md`): the owner's sheet is the
+authority, not the transcript; resolve both ways and count requested vs resolved; verify a bleep by
+1 kHz band energy, never by the absence of an error.
