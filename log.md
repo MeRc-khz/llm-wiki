@@ -398,3 +398,19 @@
   free plan.
 - Manual posting pack at `OUTBOX/BZRLNX_POSTING_PACK.md` (supersedes the two older social files,
   which used pre-assembly-index numbering).
+
+## [2026-10-25] create | Ballademix Reassembly Deck (single-file Canvas + Web Audio DAW)
+- Built and deployed `https://ballademicz.store/daw/` — one `index.html`, no backend, no build step.
+  Canvas 2D UI + Web Audio API; waveforms are the real decoded PCM (min/max peaks at 90 buckets/s).
+- Model: `segment_01` is track 1, **locked + muted**, waveform visible, and its duration (297.3 s) *is*
+  the timeline. The only edit on a released stem is dragging it horizontally to align.
+- 25 lanes = master + 24 stems; `17a`/`17b` declared as beat/drum tracks. Verified headless against the
+  live URL: decode 25/25, PLAY RMS 0.66 → PAUSE 0, scrub lands within 0.2 s of the pixel maths, drag
+  0→41.13 s, vol 0.5, pan 0.20, solo force-mutes others, loop wraps 294.3 → 1.2.
+- **Bug fixed:** master duration rendered `0:00.000 / 4` because the clock stripped `:mm.sss` instead of
+  just milliseconds; now `0:00.000 / 4:57`. Also reworded the overflow warning, which implied a drag
+  could fit an 828 s stem into a 297 s timeline.
+- **Open:** `segment_17a`/`17b` WAVs do not exist — both lanes currently load `segment_17` (828 s) twice;
+  the Audacity split is still outstanding.
+- HTTPS added via Certbot for `ballademicz.com/.store/.shop/.us` (the deck previously failed with
+  `chrome-error://` because Chrome auto-upgrades to https).

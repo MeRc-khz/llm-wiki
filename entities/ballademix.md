@@ -1,7 +1,7 @@
 ---
 title: Ballademix
 created: 2026-05-25
-updated: 2026-05-25
+updated: 2026-10-25
 type: entity
 tags: [music, video, agentic]
 sources: [raw/articles/ballademix-proposal.md]
@@ -52,6 +52,14 @@ To drive competitive collection, each of the 9 NFTs features a localized contest
 * **The Wallet Hunt:** For instance, one specific NFT is cryptographically linked to a private secure wallet.
 * **The Game:** Collectors attempt to guess or decrypt the passphrase to this wallet based on clues hidden inside the NFT’s audio, video, or metadata.
 * **The Reward:** The winner who unlocks the wallet instantly claims **5% of the total revenue generated from the sale** of that specific NFT.
+
+---
+
+## 🎛️ Consumption: the Reassembly Deck
+
+Holders and listeners reassemble *"I Know Why"* by ear in the **[[ballademix-reassembly-deck]]** — a single-file Canvas + Web Audio page where each released stem is
+dragged along a shared 297 s timeline against a locked, muted master waveform. Live at
+`ballademicz.store/daw/`.
 
 ---
 
