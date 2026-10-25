@@ -383,3 +383,18 @@
 - Two cost tiers: text/bar-only edits reuse the render (free); changing which words are bleeped
   needs a new render ($0.05/s).
 - Reference: `references/censorship-and-lyrics.md` in the `shortform-social-campaigns` skill.
+
+## [2026-10-25] update | BzrLnx X account wired; brand string changed to BZRLNXXX
+- Handle finalised as **@bzrlnxxx** (three x's), display name **BZRLNXXX**. Confirmed by the API
+  (`GET /2/users/me` -> username `bzrlnxxx`), not by asking. On-video badge + end card re-cut from
+  archived renders — overlays, so **$0** and no paid render touched.
+- X credentials live and verified (`/root/.secrets/x-bzrlnxxx.env`, 0600, outside every repo).
+  Signer validated against X's published worked example before use.
+- **Blocker: 402 "credits depleted".** Pay-per-use accounts need a funded balance; `initialize` and
+  `append` succeed and only `finalize` is metered, so a media upload looks healthy until the last
+  step. Client is posting manually until merch revenue lands.
+- **Unblock path that costs nothing:** Buffer's free tier includes X and posts through Buffer's own
+  access, making the API balance irrelevant. Metricool and Publer exclude X from free; Later has no
+  free plan.
+- Manual posting pack at `OUTBOX/BZRLNX_POSTING_PACK.md` (supersedes the two older social files,
+  which used pre-assembly-index numbering).
