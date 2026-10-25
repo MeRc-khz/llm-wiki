@@ -522,3 +522,39 @@ Also validated: no malformed lines, no backwards timings. One zero-length line f
 **Lesson recorded** in the skill (`references/censorship-and-lyrics.md`): the owner's sheet is the
 authority, not the transcript; resolve both ways and count requested vs resolved; verify a bleep by
 1 kHz band energy, never by the absence of an error.
+
+## [2026-10-25] build | HyperFrames motion-graphics overlays for the lyric cards
+
+Coupe: keep segment_03 as rendered (no re-render — decision recorded), and find tooling that
+"jazzes up the cards" the way TikTok creators use transitions and effects; look into hyperframes.
+
+**What HyperFrames is:** HeyGen's open-source framework (`github.com/heygen-com/hyperframes`) that
+turns HTML+CSS+GSAP into frame-accurate video by seeking each frame in headless Chrome and encoding
+with ffmpeg. Same vendor as `heygen/avatar-iv`, the model behind our talking-head renders. Ships
+agent skills (`/hyperframes`, `/motion-graphics`), not just a CLI. Verified runnable here: Node
+v24.22.0, chromium and ffmpeg present; CLI 0.8.200.
+
+**The cost insight that makes it the right choice:** the talking-head render is the paid step and the
+cards are not. HyperFrames renders **transparent** overlays (ProRes 4444), so card work is an ffmpeg
+composite over already-paid footage — free, and retroactive to clips already shipped.
+
+**Built:** `scripts/make_overlay.py <sheet> <project>` — generates a HyperFrames composition from any
+lyric sheet (raw lines, so the `<< >>` positions survive). 13 cards from the real segment_03 sheet,
+kinetic type on a `0.028s` stagger, bars wiping `scaleX 0->1`, cards whipping off on line change.
+Composited onto `sample_02_raw.mp4` and uploaded for review.
+
+**Three defects the linter did NOT catch (check passed 0 errors while the output was wrong):**
+1. `--format webm` returned `pix_fmt=yuv420p` — **no alpha**. It would have composited as an opaque
+   black sheet over the footage. **MOV is the alpha-preserving path** (`prores / yuva444p12le`);
+   verify with ffprobe before every composite.
+2. `data-fps` on `<html>` is ignored — it belongs on the root composition div, else the render
+   silently uses 30 fps and fights our 25 fps clips.
+3. Type at 68px read as a footnote and the card sat inside the bottom UI-rail zone; now 96px and
+   431px clear of the bottom edge. Bars were fixed-width squares (read as checkboxes) — now sized to
+   the word, and confirmed black by sampling pixels (interior RGB [4,3,2]) rather than by eye.
+
+**Coupe's decision:** overlay applies going forward; 01/02 can be re-cut retroactively for $0 on his
+word. Open: whether to add the beat-sync pass (`hyperframes beats` / `audio` onset detection) to lock
+card hits to each stem's drums rather than only the lyric timings.
+
+Lesson recorded as skill `hyperframes-motion-graphics`.
