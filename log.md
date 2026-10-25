@@ -558,3 +558,40 @@ word. Open: whether to add the beat-sync pass (`hyperframes beats` / `audio` ons
 card hits to each stem's drums rather than only the lyric timings.
 
 Lesson recorded as skill `hyperframes-motion-graphics`.
+
+## [2026-10-25] fix | Wrong footage in the overlay demo (my error), and drum sync built
+
+**The error.** The first motion demo composited segment_03's lyric cards onto `sample_02_raw.mp4`.
+That file is **segment_02's** take. The footage was chosen by filename in a folder that has been
+through several naming passes, and the audio was never checked. Correlating it afterwards:
+`sample_02_raw.mp4 vs segment_02 = +1.00`, `vs segment_03 = +0.16`. Every card was stamped on a
+different performance. Coupe caught it as "the card and the generation are out of sync wrong card".
+
+**The guard.** `scripts/build_drop.py` now fingerprints the footage against the segment's own audio
+and **aborts** below r=0.90, and it verifies the rendered overlay carries alpha (`yuva`) before
+compositing. Negative control run deliberately: the wrong pairing returned `r=-0.001` and the build
+refused. A correct pairing reads +0.94..+1.00.
+
+**Drum sync — measured, not assumed.** `hyperframes beats` reports "no beats detected" on these
+stems and that is correct: autocorrelation of the onset flux peaks at only **0.04-0.32** across
+segments 02/03/04/06, so there is **no locked tempo**. The drum bed (`segment_17a`) is a separate
+file and is not under slots 01-03. Implemented sync against the **transients actually present**
+(77 in seg03, 76 in seg02) via `scripts/onsets.py` (per-band energy flux: kick/body/air, each
+normalised so a loud low end cannot dominate):
+- entrance snaps onto an onset only within **0.10 s** — beyond that the lyric timing wins, since a
+  card arriving 400 ms early is worse than no sync;
+- **accent pulse on every onset** inside a card window (scale 1->1.022->1 over 150 ms); 157 accents
+  in slot 02.
+
+Independent validation of the detector: ASR line starts landed **+0.017 s, -0.007 s, +0.051 s** from
+a detected onset on three separate lines — two unrelated methods agreeing to within a frame.
+
+**Delivered:** `out/slot01_motion.mp4` (segment_02, 26.6 MB) and `out/slot02_motion.mp4`
+(segment_03, 59.7 MB), both composited on verified-correct footage, check passed, alpha confirmed,
+card measured 650 px from the bottom (clear of the rail zone; overlay-only render put it at 649 px,
+so the composite is 1:1).
+
+**Blocked:** drop 3 (Fri 10-30, slot 03 = `segment_04`) has no avatar render, and there is still only
+**one portrait for all 24 drops** — two were supplied. Needs a per-drop portrait from Coupe; render
+is ~$1.27. Also still outstanding: badge/sting/end-card assembly on top of these two (free), before
+Monday.
