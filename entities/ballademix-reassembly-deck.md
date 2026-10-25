@@ -69,14 +69,30 @@ sources, sets `pos`, and resumes on release.
 - **Misleading overflow copy.** "drag them in or split" implied a drag could make an 828 s stem fit a
   297 s timeline. Reworded to "stem(s) run longer than the master — slide to align a section".
 
-## Open items
+## The 17a / 17b lanes
 
-- **`segment_17a` / `segment_17b` do not exist as files.** Both tracks point at `segment_17`
-  (`src:"segment_17"`), so they currently load the same 828 s buffer twice. The intent is a *beat sample*
-  and a *drum track* split in Audacity; until those WAVs are dropped into `daw/audio/`, the split is a
-  placeholder and both lanes mirror the same audio.
-- HTTPS was not configured when the deck was first deployed — the browser auto-upgraded to
-  `https://` and hit `chrome-error://`. Certbot now covers `ballademicz.com/.store/.shop/.us`.
+`segment_17.wav` is **one** 828 s beat+drums bed, not two separated stems. A 10 s RMS sweep shows a hard
+energy step — the first ~267 s sit around **-7 dB** and everything after drops to **-17 dB** — so the
+file is cut there rather than at a blind midpoint:
+
+| lane | file | span | length |
+|---|---|---|---|
+| 17a | `daw/audio/segment_17a.wav` | 0 – 267.0 s (loud section) | 267.0 s |
+| 17b | `daw/audio/segment_17b.wav` | 267.0 – 828.0 s (quieter section) | 561.0 s |
+
+Both are 16 kHz mono PCM with a 10 ms fade at the cut, matching the rest of the stem set. **The labels
+are deliberately `17a BEAT+DRUMS A` / `17b BEAT+DRUMS B`, not "beat sample" / "drum track"** — calling
+two halves of one bed by two instrument names would misdescribe what plays. Swap in real separated stems
+and relabel once they exist.
+
+## Fixed during bring-up
+
+- **The clock reported the wrong master length** — `0:00.000 / 4` instead of `/ 4:57`. The formatter
+  stripped `:mm.sss` instead of only the milliseconds.
+- **The overflow notice was misleading** — "drag them in or split" implied a drag could fit an 828 s stem
+  onto a 297 s timeline. Now: *"stem(s) run longer than the master — slide to align a section"*.
+- **HTTPS was missing**, so Chrome auto-upgraded and the deck died on `chrome-error://`. Certbot now
+  covers `ballademicz.com/.store/.shop/.us`. Never test a browser page over plain HTTP and trust the result.
 
 ## Related
 

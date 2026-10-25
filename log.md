@@ -414,3 +414,31 @@
   the Audacity split is still outstanding.
 - HTTPS added via Certbot for `ballademicz.com/.store/.shop/.us` (the deck previously failed with
   `chrome-error://` because Chrome auto-upgrades to https).
+
+## [2026-10-25] update | Ballademix deck: real 17a/17b lanes + Buffer API is the posting path
+
+**Deck** (`ballademicz.com/daw/`, also `.store/.shop/.us`):
+- `segment_17.wav` was being loaded twice (both 17a/17b lanes pointed at `src:"segment_17"`). Split at the
+  file's own structural boundary, found by measurement not guesswork: a 10 s RMS sweep shows **~-7 dB for the
+  first 267 s, then ~-17 dB** for the rest. Cut at **267.0 s** with a 10 ms fade -> `segment_17a.wav` (267 s)
+  and `segment_17b.wav` (561 s), 16 kHz mono to match the set.
+- Lanes relabelled `17a/17b BEAT+DRUMS A/B` — the source is **one** beat+drums bed, so calling the halves
+  "beat sample" and "drum track" would be a lie about what plays.
+- Re-verified headless after the change: 25/25 tracks decode, PLAY RMS 0.31 -> 0.00 on pause, clock
+  `0:00.000 / 4:57`, drag-to-align moves `segment_02` 0 -> 27.0 s, one stem (17b) outruns the timeline.
+
+**Buffer is now the X posting path** (the X developer account is pay-per-use with a **402 depleted
+balance**, so direct API posting is dead until it is funded):
+- Key verified against `POST https://api.buffer.com` with `Authorization: Bearer <key>` — the **legacy**
+  REST host (`api.bufferapp.com/1/`) rejects personal keys outright: *"Public API tokens are not accepted
+  for REST API access"*. Only the GraphQL host works.
+- `account`, `channels(input:{organizationId})` and `createPost` all confirmed. One channel:
+  **`bzrlnxxx` on twitter** (`serviceId 2114172781734883328` — same user id as the X token prefix).
+- **There is no upload endpoint.** Media must already be hosted publicly; Buffer fetches the URL *at publish
+  time*, not at create time, so the URL has to stay reachable until the post actually goes out.
+- Write path proven end to end: created a text draft, created a video draft with the real hosted clip,
+  read both back, deleted both. Queue left empty — **nothing published on Coupe's behalf.**
+- Two drafts staged for Coupe to review: slot 01 (`segment_02`) and slot 02 (`segment_03`), both with the
+  approved X captions and the v3 clips. One word flips them live.
+- Client: `.scratch/bzrlnx-campaign/scripts/bufferpost.py` (`whoami|channels|posts|queue|draft|delete|publish`).
+- Key stored at `/root/.secrets/buffer.env` (0600) — posted in the public channel, **rotate when done**.
