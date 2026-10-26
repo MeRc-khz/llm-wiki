@@ -627,3 +627,47 @@ for all 24 drops. Render ~$1.27 once supplied.
 **Repeated lesson:** a downscaled contact sheet misled the eye four times in this session (type size,
 a logo on a shirt read as the card, and an 86 px strip read as a panel). Pixel measurement was right
 every time. Look at full resolution before concluding, and measure before shipping.
+
+## [2026-10-26] build | MuScriptor on the 17a/17b splits + web MIDI/soundfont research
+
+Coupe asked for 17a/17b through MuScriptor, and for research on playing multi-track MIDI and
+soundfonts in the browser.
+
+**Transcription.** Ungated mirror (`hf://cocktailpeanut/muscriptor-small/model.safetensors`), CPU,
+25 fps-agnostic: 17a 307 s / 17b 323 s wall for 267 s / 560 s of audio. Smoke-tested a 20 s slice
+first (valid `MThd`, format 1, 4 tracks, 480 ppq) before committing the long runs. Outputs in
+`/srv/projects/muscriptor-out/`: `17a.mid/.json`, `17b.mid/.json`.
+
+**The two halves are not the same kind of thing, and the working labels were backwards.**
+
+| | 17a | 17b |
+|---|---|---|
+| notes | 1503 | 1606 |
+| parts | 6, all musically distinct (5-33 pitches each) | 4, but **91% drums** |
+| character | a real 6-part arrangement (voice/lead/kit/2 guitars/bass) | a **drum transcription** |
+
+17b's drum part is legitimate — 831 closed hats, 293 bass drum, 194 snare, 67 open hats; median
+inter-onset 0.17 s = eighth-note hats at ~180 BPM, which **independently matches the tempo MuScriptor
+detected in 17a** (~180 BPM). But two of 17b's tracks are **degenerate artifacts**: 105 "acoustic
+piano" notes all on C5, 6 "flutes" all on C6. Those must be discarded.
+
+So: 17a had been called "beat" and 17b "drums". **It is the reverse.** Deck lanes labelled from the old
+assumption would be wrong. Consistent with the earlier energy measurement (17a loud -7 dB, 17b quiet
+-17 dB split at 267 s).
+
+**Correction to a prior prediction:** the reference warned of a 120 BPM placeholder fallback when no
+tempo locks. On this material the model **did** detect a tempo (~180 BPM, tempo events at 179.9 and
+181.5) — the bar grid is real.
+
+**Parser bug, mine.** A first throwaway SMF reader ignored running status and reported mismatched
+note-on/note-off counts (78 on / 106 off), which looks exactly like a corrupt file. Fixed; every track
+then balanced exactly, giving the 1503. Recorded in the skill as "believe the parser first, the file
+second".
+
+**Research (new skill reference `audio-processing/references/web-midi-and-soundfonts.md`).** Three
+viable paths — **SpessaSynth** (SF2/SF3 in an AudioWorklet, separate thread so canvas work cannot
+glitch it, offline render, and soundfont *smart-trim* down to the samples actually used); **js-synthesizer**
+(FluidSynth compiled to WASM — the reference desktop sound); **Tone.js + @tonejs/midi** with the
+CORS-open `gleitz/midi-js-soundfonts` sample sets for per-track processing. `MIDI.js`/`MIDIjs` can
+only play one file at a time and are unmaintained. Non-negotiables: audio needs a user gesture; the
+Web MIDI API needs HTTPS; schedule against the audio time passed into the callback.
