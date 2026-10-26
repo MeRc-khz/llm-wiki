@@ -671,3 +671,49 @@ glitch it, offline render, and soundfont *smart-trim* down to the samples actual
 CORS-open `gleitz/midi-js-soundfonts` sample sets for per-track processing. `MIDI.js`/`MIDIjs` can
 only play one file at a time and are unmaintained. Non-negotiables: audio needs a user gesture; the
 Web MIDI API needs HTTPS; schedule against the audio time passed into the callback.
+
+## [2026-10-26] build | MIDI bench: soundfont playback of the 17a/17b transcriptions
+
+Coupe: add 17a/17b as MIDI to the deck with browser soundfonts — separate instrument lanes, a piano
+roll and a drum-machine lane, no editing, solo/mute/volume/pan, notes glowing on playback, and
+**2-3 switchable instruments per track** as the interactive hook.
+
+**Built:** `ballademicz.com/daw/midi/` — one page. SpessaSynth (AudioWorklet, off the main thread) +
+**GeneralUser GS** (8 MB SF3, self-hosted). Track -> MIDI channel -> `programChange` for live
+instrument swaps. Per lane: solo/mute/volume/pan; melodic tracks as piano rolls, drums as a
+drum-machine grid (one row per kit piece). Notes glow amber at the playhead.
+
+Pipeline: `muscriptor-out/prepare_midi.py` converts the MuScriptor MIDI to compact per-track JSON —
+tick->seconds **through the tempo map** (these files carry 280 tempo events), zero-length notes
+floored, degenerate tracks dropped, per-track channel recorded from the note events (mode, not the
+last event seen).
+
+**Three bugs, all mine, all caught by measuring rather than by reading code:**
+
+1. **The page died silently.** `spessasynth_lib/dist/index.js` imports the bare specifier
+   `spessasynth_core`; browsers cannot resolve bare specifiers, so the module never *executed* — my
+   own try/catch never ran and the page sat on "loading…" with an empty error field. I had believed
+   the file was clean because a grep pattern of mine omitted the space in `from "..."` and matched
+   nothing. Fixed by bundling to self-contained ESM with esbuild.
+2. **No note-offs were ever sent.** Notes had on-events but no off-events, so nothing released: voice
+   count climbed **59 -> 103** and muting every track still left **97 voices ringing**. Releases are
+   now scheduled at `start+duration`, run for *every* track including muted ones, and silencing a
+   track releases what it already holds. Verified: bounded voice count, mute -> 0.
+3. **PLAY did nothing** — the guard tested a `piece` variable that was never assigned.
+
+Also fixed in the prep pass: a minimum-duration filter of 0.02 s **deleted the entire 17a drum track**
+(all 201 hits are 0.01 s clicks). Drum hits are now floored to 0.06 s instead of dropped, which is why
+17a shows 6 parts not 5.
+
+**Verification method, and its limit.** Headless Chrome keeps the AudioContext `suspended` when the
+click is synthesised by JS, so the first run showed 0 voices and looked like a dead synth. Driving
+PLAY with a **trusted CDP input event** put `ctx` into `running`: 76 notes fired, 17-20 voices, solo
+mute behaving by voice count, no errors. A diagnostics hook now exposes the context state so a
+suspended context can never again be mistaken for a bug. **Not verified: the audible difference
+between instruments** — only that `programChange` is accepted and the program state changes.
+
+**Found in the data, and worth knowing before anyone plays it:** both transcriptions have real holes.
+**17a is silent from 70 s to 140 s — a 70-second gap, 26% of the piece;** 17b is silent from 20 s to
+50 s. The player is faithful; the transcription detected nothing there.
+
+Lessons recorded in `audio-processing/references/web-midi-and-soundfonts.md`.
