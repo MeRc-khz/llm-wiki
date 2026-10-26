@@ -595,3 +595,35 @@ so the composite is 1:1).
 **one portrait for all 24 drops** — two were supplied. Needs a per-drop portrait from Coupe; render
 is ~$1.27. Also still outstanding: badge/sting/end-card assembly on top of these two (free), before
 Monday.
+
+## [2026-10-26] ship | Slots 01 and 02 finished: motion cards + brand furniture
+
+Both drops assembled end to end and delivered: footage + animated lyric cards + counter badge +
+store pill + brand sting + CTA end card. **34.60 s** and **37.36 s** — the same slot structure as the
+previously shipped clips, so nothing downstream changes.
+
+**Second bug, this one in the overlay itself.** The card markup was
+`<div class="panel"></div><p class="line">…</p>` — the panel was an EMPTY sibling, so it rendered as a
+bare 86 px padding strip with the lyric type hanging below it and outside its amber border. Every card
+in every clip looked broken. Fixed by nesting the line inside the panel; panel is now 194 px and the
+type sits inside it, confirmed on a full-resolution frame. **Lint passed the whole time** — caught only
+by looking at one full-res frame rather than a downscaled grid.
+
+**Counter relocated bottom-left -> top-left.** The old position was measured at y=1478 while the new
+card's bottom edge is y=1490 — a **12 px collision**. Caught by measuring before shipping, not by
+eye. Counter top-left, store pill top-right, lyrics in the lower third: three zones, no contact.
+Flagged to Coupe as a layout change since he had said "no changes".
+
+**Verified:** audio-fingerprint guard passed (r>=0.90) on both; overlay alpha `yuva444p12le` at 25 fps;
+card bottom edge 427-432 px from the frame bottom; no counter/pill/card overlap; durations exact.
+
+New scripts: `furnish.py` (badge + pill + sting + endcard over an already-composited clip — needed
+because `assemble.py` expects separate card PNGs and the cards are now baked in). `make_overlay.py`
+also gained `--onsets` with a 0.10 s snap guard plus accent pulses on every transient.
+
+**Still blocked:** drop 3 (Fri 10-30, slot 03 = `segment_04`) needs a per-drop portrait; only one exists
+for all 24 drops. Render ~$1.27 once supplied.
+
+**Repeated lesson:** a downscaled contact sheet misled the eye four times in this session (type size,
+a logo on a shirt read as the card, and an 86 px strip read as a panel). Pixel measurement was right
+every time. Look at full resolution before concluding, and measure before shipping.
