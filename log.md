@@ -717,3 +717,48 @@ between instruments** — only that `programChange` is accepted and the program 
 50 s. The player is faithful; the transcription detected nothing there.
 
 Lessons recorded in `audio-processing/references/web-midi-and-soundfonts.md`.
+
+## [2026-10-27] build | Per-stem NFT gate on the reassembly deck
+
+Coupe: mint an NFT per stem; once a stem is released it is available as an NFT, and **holding the NFT
+activates that stem in the DAW**.
+
+**Built and live:** `ballademicz.com/daw/?gate=nft`.
+- `daw/nft/stems.json` — the 24-stem mint manifest (slot, stemId, drop date, `mint: null`), **generated
+  from the deck's own track config** so ids and dates cannot drift from what the page renders.
+- `daw/nft/gate.js` — reads the connected wallet's token accounts (both token programs), no signature,
+  no transaction. `?wallet=<address>` reads any address read-only, which is how the gate is tested
+  without a browser extension.
+- `?gate=nft` enforces. **Without that parameter the deck is byte-for-byte the old behaviour** —
+  verified first, since this was a live page.
+- The gate runs **before** the audio loader, so a stem the visitor does not own is never fetched.
+
+**Verified end-to-end against a live mainnet mint**, not simulated: `error: none`, `mints seen: 970`,
+`ownedStems: [segment_02]`; that one lane unlocked and decoded (waveform + thumbnail visible) while the
+other 23 stayed `SEALED / NFT REQUIRED`. The master lane is never gated.
+
+**Four infrastructure problems, each found by testing and each of which looked like our bug:**
+
+1. `api.mainnet-beta.solana.com` returns **403 "Access forbidden" to a browser** while the identical
+   call works from curl — Origin-based.
+2. `solana-rpc.publicnode.com` serves `getVersion` but refuses `getTokenAccountsByOwner` as an
+   *indexed* request; Ankr and Helius need keys. **No free RPC works from a browser.**
+3. **Fix: same-origin nginx proxy `/solrpc`** — which needed (a) a trailing slash on `proxy_pass`
+   because Solana only accepts POST at `/` (otherwise 405 "Bad method"), and (b) **blanking the
+   forwarded `Origin`/`Referer` headers**, which is exactly what Solana's 403 keys off and nginx
+   forwards by default. Also the right production shape: a keyed provider's key then stays server-side.
+4. **nginx served `.js` with `Cache-Control: max-age=2592000` (30 days)** — a fix of mine sat on disk and
+   never reached the browser, so a cycle was spent debugging code that was already correct. Added a
+   `no-cache` rule for `/daw/nft/` and a `?v=` cache-buster.
+
+**Bug of my own:** the master lane (segment_01) was gated — it is the alignment reference and has no
+NFT — which also broke its labels (`drops undefined`, `assembly undefined/24`). Now only ids present in
+the manifest can be gated.
+
+**Limits stated to Coupe:** client-side gating controls *access*, not *possession* — the mp3s are still
+fetchable by direct URL, and fixing that means server-side auth on the audio. The free public RPC will
+rate-limit under traffic.
+
+**Open decisions before any minting:** confirm Solana + Metaplex Core; mint on release day or all 24 up
+front; free claim vs sale price; who holds supply. Mint addresses drop straight into `stems.json` — the
+gate already reads that field, so no code changes when they exist.
