@@ -762,3 +762,40 @@ rate-limit under traffic.
 **Open decisions before any minting:** confirm Solana + Metaplex Core; mint on release day or all 24 up
 front; free claim vs sale price; who holds supply. Mint addresses drop straight into `stems.json` — the
 gate already reads that field, so no code changes when they exist.
+
+
+## [2026-10-27] fix | "sounds not playing in browser" — could not reproduce, hardened anyway
+
+Coupe reported no sound. **I could not reproduce it on either page**, so I measured real output rather
+than trusting the transport UI, using an AnalyserNode tap wired in front of the destination:
+
+```
+deck  ballademicz.com/daw/       ctx running   output RMS 0.36-0.41
+midi  ballademicz.com/daw/midi/  ctx running   15 voices sounding
+```
+
+Both play from a cold load with the PLAY click as the first interaction. Reported honestly as
+unreproduced and asked for browser/device plus the new banner text.
+
+Fixes shipped anyway, because these are the real causes of the class:
+
+1. **The MIDI page created its AudioContext at page load.** A context created before any gesture starts
+   suspended and on iOS/macOS Safari can stay unresumable — the page looks alive and plays nothing. It
+   is now created *inside* the first gesture, with the 8 MB soundfont streamed behind a visible
+   percentage.
+2. **PLAY before the soundfont finished was silently discarded** (`if (!ready) return;`) — exactly "I
+   pressed play and nothing happened". The click now arms the audio and the intent is remembered.
+3. **Deck: `play()` called `resume()` without awaiting it** and then scheduled sources against
+   `ctx.currentTime`, which is frozen at 0 while suspended — every source lands in the past and never
+   sounds while the clock runs. `play()` is now async, waits for `running`, and refuses with a message
+   if the browser will not grant it. **Chrome won this race in every attempt, so this is a latent
+   fragility fix, not a proven cause.**
+4. **`.html` had no `Cache-Control` in nginx**, so browsers cached it heuristically and could keep
+   running a stale page. **I was caught by this mid-investigation** — my own browser served an older
+   copy and I chased a phantom. HTML is now `no-cache`.
+
+The MIDI page now states why it is silent (banner: *press play* / *loading N%* / *browser is blocking
+audio*), and both pages expose output-level taps so silence is measurable.
+
+Lessons recorded in `audio-processing/references/web-midi-and-soundfonts.md` and
+`nginx-production-deployments` ("A Cached Page Hides Your Fix").
