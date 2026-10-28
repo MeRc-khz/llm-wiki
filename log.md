@@ -799,3 +799,37 @@ audio*), and both pages expose output-level taps so silence is measurable.
 
 Lessons recorded in `audio-processing/references/web-midi-and-soundfonts.md` and
 `nginx-production-deployments` ("A Cached Page Hides Your Fix").
+
+
+## [2026-10-28] fix | MIDI bench silent: the synth was never connected to the output
+
+Coupe: *"soundfont loads and piano roll starts but no sound /daw/midi/"*. That three-way split was the
+diagnosis — soundfont loading ruled out the network, the roll starting ruled out the scheduler, and
+what remained was the output path.
+
+**Root cause: `WorkletSynthesizer` was never connected to `ctx.destination`.** `BasicSynthesizer` is an
+`AudioNode` and does not connect itself. One missing call:
+
+```js
+synth.connect(meter);          // <- did not exist
+meter.connect(ctx.destination);
+```
+
+Everything else genuinely worked: the worklet ran, the 8 MB soundfont parsed, notes were scheduled,
+voices were allocated. The synth was producing audio into nothing.
+
+**Why it shipped, and the real error:** the previous report claimed the page was making sound on the
+evidence of `voices: 15` — but `voiceCount` only proves the synth is *allocating* voices, not that they
+reach the speakers. The deck had been verified with a real AnalyserNode RMS (0.36-0.41); the MIDI page
+was signed off on an internal counter. **That inconsistency between two pages in the same project is
+what let it through** — and it was written into the skill an hour before the bug was reported.
+
+**Verified after the fix, by reading samples:** `ctx running / playing / voices 5 / rms 0.0314`. Added a
+live level meter to the header so a silent output chain is visible on the page rather than invisible.
+
+The earlier hardening (arm the context inside the gesture, don't drop an early PLAY, `no-cache` on HTML)
+stays: none of it was the cause, all of it is correct, and the cache fix is why a stale page could not
+keep masking the result.
+
+Lessons in `audio-processing/references/web-midi-and-soundfonts.md` — "A synth/plugin node does NOT
+connect itself — and an internal counter is not evidence of sound".
