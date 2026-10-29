@@ -833,3 +833,39 @@ keep masking the result.
 
 Lessons in `audio-processing/references/web-midi-and-soundfonts.md` — "A synth/plugin node does NOT
 connect itself — and an internal counter is not evidence of sound".
+
+
+## [2026-10-29] release | 01/24 LIVE on X — and the staged draft was pointing at the wrong cut
+
+Coupe: *"release 01/24 on x through buffer"*. Published and verified.
+
+**Live:** https://x.com/bzrlnxxx/status/2115597744513372520 — author **BZRLNXXX** (@bzrlnxxx),
+created 2026-10-29T00:13:02Z, media **video 34.600 s**, caption verbatim with the `t.co` store link.
+
+**Caught before it shipped: the staged draft was pointing at a superseded file.** Its asset URL was
+`7a5c1699...` = **`clip_01_v3_buzz.mp4`** — the cut from *before* the motion cards, badge, store pill,
+sting and end card. Publishing it would have opened the campaign with **no store link on the video at
+all**, i.e. no funnel, silently and in public. Found by hashing: the relay's media filenames *are*
+sha256 content hashes, so the URL decodes to an exact local file. Swapped the asset to
+`final_slot01_buzz.mp4` (still a draft), read it back, then published.
+
+**The duration is the receipt:** superseded cut 34.68 s, final 34.60 s, X reports **34.600 s** — the
+correct furnished clip is definitively what went out.
+
+**Slot 02's draft had the identical defect** — pointing at `clip_02_v3_buzz.mp4` (37.20 s) instead of
+`final_slot02_buzz.mp4` (37.36 s). Swapped and left as a draft.
+
+**Buffer publish mechanics learned the hard way (both silent no-ops):**
+- `editPost` is a **full replacement, not a patch** — send only an id and a mode and it wipes the post
+  (`Invalid post: Post must have either text or media`). Text and assets must be resent every time.
+- **`mode: shareNow` alone does not publish.** It returns `PostActionSuccess` and the post stays
+  `draft`/`addToQueue`. The actual switch is `saveToDraft: false` **plus** `mode: shareNow` →
+  `scheduled` → `sent`.
+- `externalLink` carries the live post URL.
+
+**Verification without the platform API:** X reads return **402 credits depleted** and x.com **403s the
+headless browser**, so the post was confirmed through X's own public oEmbed and syndication endpoints
+(author, timestamp, media type, duration, caption). The display name now reads **BZRLNXXX** on the
+live post — it had still been "Merc kHz" through the API.
+
+Recorded in `shortform-social-campaigns/references/buffer-api-posting.md`.
