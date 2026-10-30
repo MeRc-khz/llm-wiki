@@ -869,3 +869,40 @@ headless browser**, so the post was confirmed through X's own public oEmbed and 
 live post — it had still been "Merc kHz" through the API.
 
 Recorded in `shortform-social-campaigns/references/buffer-api-posting.md`.
+
+
+## [2026-10-30] build | Drum sequencer overlay on the MIDI bench
+
+Coupe wanted to repair MuScriptor's drum transcription by ear: an EDIT pen beside solo/mute on the
+drum lane opening a step sequencer — 4/8/16 measures at a time, playing the track, editable **live
+while it runs**, with a measure-jump box, total measure count, editable tempo, a PLACE button to push
+the sequence into the DAW track, and RESET back to the transcription.
+
+**Built and verified** at `ballademicz.com/daw/midi/` (EDIT on the 17b drums lane): 221 measures,
+1467 transcribed hits across 7 voices; view 16 = 1792 cells; click toggles; playback live-editable
+(added a hit ahead of the playhead: `fired 0 -> 11`); tempo 140 and back leaves edits intact; PLACE
+writes 1469 hits and the main transport then sounds them (**rms 0.0665**); RESET returns the exact 1467.
+
+**The finding that shaped the design — measure the grid fit before snapping.** The transcription is
+**not** on a 16th grid: at the detected 93.9 BPM the median distance from the nearest 16th is **40.8 ms**
+(p90 72.3, worst 79.7) and only **30.9%** of hits land within 25 ms. Snapping every hit on open would
+have audibly re-timed two thirds of the performance the tool exists to repair. So each transcribed hit
+**keeps its sub-step offset** (drawn as a shade inside the cell) and only hand-drawn hits land dead on
+the grid.
+
+**Two bugs of mine, both caught by measuring rather than reading:**
+
+1. **The overlay was covering the page permanently and swallowing clicks.** `[hidden]` is only
+   `display:none` from the UA stylesheet, and my CSS said `display:flex` — an author rule beats it. The
+   modal looked "open but empty" because the click meant for the EDIT pen hit the overlay instead.
+2. **Changing tempo silently deleted the user's edits**, because the handler rebuilt the grid from the
+   original MIDI. Caught only because PLACE reported 1467 hits instead of the 1469 drawn. The grid is
+   **step space**, which is tempo-independent — tempo now changes only the seconds-per-step.
+
+Also fixed the scheduler's fired-step guard (an equality test let steps in a sliding lookahead window
+fire twice; it is now a monotonic `lastFired` reset on every play/seek).
+
+**Open question put to Coupe:** PLACE is in-memory only — the track reverts on reload. He needs to say
+whether an edit is a scratchpad or the new source of truth for that stem.
+
+Lessons recorded in `audio-processing/references/web-midi-and-soundfonts.md`.
