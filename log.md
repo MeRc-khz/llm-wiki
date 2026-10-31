@@ -987,3 +987,35 @@ seconds and do not time-stretch. Also: 17b is genuinely silent from 0:20 to 0:50
 
 Lessons recorded in `audio-processing/references/web-midi-and-soundfonts.md` (sharing one transport) and
 `nginx-production-deployments` (a pre-existing cache entry survives a no-cache rule).
+
+
+## [2026-10-31] ops | Ballademix under version control -> github.com/MeRc-khz/ballademix
+
+Coupe: *"should be a git repo for ballademix lets commit and push to github"*.
+
+**Done.** Commit `73aac2b`, 52 files, 94 MB, branch `main`, remote `origin`, and **remote HEAD == local
+HEAD verified with a fetch** rather than assumed. Repo confirmed `private: true` from the GitHub API, not
+from the flag passed to `gh repo create`.
+
+**Repo is PRIVATE, chosen from the content rather than the request.** The tree holds the 24 unreleased
+stems (`audio/`, 24 MB) and the finished campaign cuts (`tests/slot01.mp4`, `slot02.mp4`). A public repo
+would have published the record and the ads before the drops. Private is seconds to reverse; a push is not
+un-publishable.
+
+**Security work that had to precede `git init`:** the deck lives in the web root, so making it a repo put
+`.git/` inside the docroot, where nginx's `try_files` would serve `.git/config` (remote URL) and the whole
+object store. Added a deny for VCS/dotfile paths *before* initialising and verified: `/daw/` 200,
+`/daw/.git/config` 404.
+
+**Two git gotchas:** `git add` exited **128** with `detected dubious ownership` (directory owned by
+`www-data`, running as root) — nothing on stdout, so it reads as success unless stderr or the code is
+checked. Fixed with `safe.directory`. And the repo-local identity only sticks when set **after**
+`git init`; set before, it silently lands nowhere. Identity set to `MeRc-khz <merc.khz@outlook.com>` to
+match his other repos rather than the box default `Hermes Bot`.
+
+**Shape:** the repo *is* the deploy directory — the tracked files are the ones the site serves, so there is
+no drift and a week of untracked work is now a real history. Trade-off noted to him: pushing from the live
+directory means a bad commit is one `checkout` from changing the live site; a repo-plus-deploy split is
+available if he prefers.
+
+Secret scan over the committed tree (`ghp_`, `sk-`, private keys, `password=`) came back clean.
