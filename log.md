@@ -906,3 +906,39 @@ fire twice; it is now a monotonic `lastFired` reset on every play/seek).
 whether an edit is a scratchpad or the new source of truth for that stem.
 
 Lessons recorded in `audio-processing/references/web-midi-and-soundfonts.md`.
+
+
+## [2026-10-31] change | Deck: drum bed and sample pinned under the master, always active
+
+Coupe: *"put 17a and 17b right under segment_01 17a named Sample and 17b named drum sequence both
+should be activated."*
+
+Lane order is now `01 MASTER · SAMPLE (267.4s) · DRUM SEQUENCE (560.0s) · 01/24 ... 24/24`, with both
+reference lanes carrying working M/S/L, volume and pan.
+
+**The trap this exposed: the deck derived public numbering from array position.** `buildTracks()` kept a
+running `slot` counter over the non-master tracks and derived `pos` (`01/24...24/24`) and `dropDate` from
+it. Moving two lanes to the top would therefore have **renumbered the entire campaign** - segment_02,
+already live on X as 01/24, would have become 03/24, and every drop date would have shifted two slots.
+
+**Fix: slot comes from the track's own config, never from list order.** `{ id:"segment_17a", ..., slot:16 }`.
+Verified after the move: `segment_02 -> 01/24`, `segment_03 -> 02/24`, ... `segment_24 -> 24/24`, and the
+NFT manifest's slot->stem mapping is **identical** to before (checked against the file, not assumed).
+
+**Activation** is a new `alwaysOn` flag, honoured in both gates:
+- date gate: `pending = !UNLOCK_ALL && !alwaysOn && TODAY_ISO < dropDate`
+- NFT gate: `isStem` ignores `alwaysOn` manifest entries, so the two lanes are never gated
+
+Verified: default load and `?today=2026-11-05` both leave SAMPLE + DRUM SEQUENCE open alongside the
+released drops; under `?gate=nft` with no wallet they report `gated:false` while `segment_02` still
+reports `gated:true`.
+
+**Latent bug fixed in passing:** the master lane was located with `tracks.find(t => t.locked)`, but
+**sealed lanes are also `locked`** - so the "master" was whichever locked lane came first in the list.
+It was correct only by accident of the master sitting at index 0. Now keyed off `t.kind === "master"`.
+Third bug of the same shape in this deck (sealed-lane label, roll track kind, now the master lookup):
+**anything keyed off `locked` is suspect, because sealing sets it.**
+
+Open question put to Coupe: the two lanes keep their internal slot numbers (16, 17) because they are the
+two halves of segment_17 and the mint manifest depends on it. Treating them as outside the numbered 24
+would renumber the campaign and the mint.
