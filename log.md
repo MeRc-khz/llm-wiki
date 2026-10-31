@@ -942,3 +942,48 @@ Third bug of the same shape in this deck (sealed-lane label, roll track kind, no
 Open question put to Coupe: the two lanes keep their internal slot numbers (16, 17) because they are the
 two halves of segment_17 and the mint manifest depends on it. Treating them as outside the numbered 24
 would renumber the campaign and the mint.
+
+
+## [2026-10-31] build | DAW plays 17b's MIDI drums; the sequencer becomes the deck's clock
+
+Coupe: *"need the DAW to play the midi drums for 17b so the track should look and behave like the midi
+bench. The DAW clock should be based off of the drum sequencer clock, and tempo, clicking edit should
+bring up the drum sequencer pressing play in the drum sequencer plays the DAW and all activated clips."*
+
+**Delivered.** The DRUM SEQUENCE lane is MIDI-driven (SpessaSynth + General User GS), draws as an amber
+hit grid instead of a waveform, and carries an **E** button beside M/S/L that opens the drum sequencer.
+The sequencer has no timebase of its own: it reads the deck's playhead and schedules against it, so
+PLAY in the sequencer starts the whole deck (verified `deckPlaying false -> true`, pos 86.2 -> 92.7) and
+STOP stops it. The deck's frame loop pumps the drum hits from the sequencer's grid, so the tempo control
+is what places the beat against the recorded stems. Sequencer logic lives in a shared module,
+`daw/lib/drumseq.js`, rather than being duplicated.
+
+Verified with measurements: grid 221 bars / 1467 hits / 7 voices at 93.9 BPM; **fired notes == the 18 the
+grid holds** over 16s (exact); real output **RMS 0.0832**; live cell edit 1467 -> 1468; PLACE carries 1468
+into the lane, RESET restores 1467; CLOSE leaves the deck intact.
+
+**I DESTROYED THE DECK FILE MID-WORK.** The edit was `open(p,"w").write(open(p).read()...)` — Python
+truncates on open-for-write, so the read returned empty and it wrote 0 bytes. `index.html` went to zero
+and the deck 404'd until I restored from the backup taken at the start of the job and re-applied every
+change. Nothing lost permanently, but the site was down for minutes. **Rule: read once, write once —
+never open-for-write and read in the same expression.** Snapshots after each write since.
+
+**The real bug, found only by instrumenting:** the drums fired ~300 notes from a window holding 10.
+Counters showed `calls 554 / resets 552` — the backwards-jump guard compared the current step against
+the **last fired** step, but the lookahead deliberately leaves `lastFired` ahead of the playhead, so it
+decided it had jumped backwards on nearly every frame and re-fired forever. Now compares against the last
+position seen; after the fix `resets: none` and the fired count matches the grid exactly.
+
+**Cache trap, again:** `/daw/lib/*.js` sat behind the 30-day asset cache (the earlier no-cache rule was
+scoped to `/daw/nft/` only), so two rounds of module edits never reached the browser. Worse, an entry
+cached *before* a no-cache rule keeps its original freshness. Fixed by covering `/daw/lib/` and the
+runtime JSON, and by versioning the dynamic import URLs.
+
+**Limits stated to Coupe:** the timeline is still 297.31 s (the master) while the drum sequence runs to
+562 s, so everything past 4:57 does not play — extending it changes the deck's whole geometry, so it was
+left as his call. And the tempo re-times the MIDI drums, not the audio: the stems are recordings in
+seconds and do not time-stretch. Also: 17b is genuinely silent from 0:20 to 0:50 (18 hits in the first
+30 s), which is the transcription, not the deck.
+
+Lessons recorded in `audio-processing/references/web-midi-and-soundfonts.md` (sharing one transport) and
+`nginx-production-deployments` (a pre-existing cache entry survives a no-cache rule).
