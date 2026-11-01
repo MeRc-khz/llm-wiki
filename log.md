@@ -1019,3 +1019,50 @@ directory means a bad commit is one `checkout` from changing the live site; a re
 available if he prefers.
 
 Secret scan over the committed tree (`ghp_`, `sk-`, private keys, `password=`) came back clean.
+
+
+## [2026-11-01] build | Sample pads (MPC-style) on the SAMPLE lane
+
+Coupe: *"for Sample add an edit button, editing should take you to a Sampler think MPC by akai. i have
+divided the audio up into 2 4 8 bar loops there 40 plus stem. user hits a pad to play the sound with the
+drums if the user likes the location user drags pad to timeline/track to buildup a sample loop."*
+
+**Delivered.** The E button on the SAMPLE lane opens a 48-pad bank — 16 pads each for 2-, 4- and 8-bar
+loops cut from `segment_17a`. Pads fire on the **next bar** of the deck's clock so they land with the
+drums rather than flamming; a pad dragged onto the SAMPLE lane is placed on the bar it was dropped on.
+New `lib/sampler.js`, plus `loops/` (48 mp3 + `manifest.json`). A lane may now carry `clips[]`, so
+placing adds to an arrangement; a lane with no clips behaves exactly as before.
+
+**His loops are not on disk and not on the relay** — no loop files anywhere, no attachment on any of his
+messages. I cut my own and made the swap a one-file change: the grid reads `loops/manifest.json`, so
+his cut drops in by replacing the files and the manifest, with no code change. **The open question is the
+bar length he cut against**, because of this:
+
+**This record has no tempo grid, measured.** Bar-line onset strength vs a random-tempo control:
+93.9 BPM (the drum clock) 0.54x — *worse* than chance; 124.5 BPM 0.98x; control 0.79x ± 0.27. Nothing
+beats chance, so "2 bars" is only 2 bars relative to a chosen tempo. I used 93.9 (the deck's clock) so
+the pads lock to the drums, and told him a re-cut is a script run if his pulse differs.
+
+**Verified with real output.** Pads rms 0.55–0.65; LOOP holds at 0.54–0.58; STOP → 0. The decisive one:
+a placed loop dropped **past 267.45 s where `segment_17a` ends**, so nothing else can sound — rms 0.60–0.63
+inside its 5.11 s window, and 0 immediately after it. Isolation, not a counter.
+
+**Three bugs, all found by instrumenting:** the drag's end listened on the pad grid so a release over the
+canvas never dropped (now `window`); `dropAt` read the pad id from `drag` after the caller cleared it, so
+every drop died on a null deref inside a pointerup handler; and `window.__samples.meta` was assigned
+before `window.__samples` existed, throwing and taking the whole drawer-open path with it.
+
+**AND I DESTROYED index.html A SECOND TIME** with the identical `open(p,"w").write(open(p).read()...)`
+line — after writing that exact lesson up following the first occurrence. Restored from a snapshot,
+re-applied every change, deck down a few minutes. Response: stopped relying on care and made it
+structural — `/srv/projects/.scratch/safeedit.py` reads first, writes once, asserts unique anchors,
+refuses a >40% shrink, snapshots before writing, and cannot express the broken pattern at all. It caught
+a stale anchor on its first use by writing nothing.
+
+Committed `524155e`, pushed, remote in sync. Lessons recorded in
+`audio-processing/references/web-samplers-and-pads.md` and `web-property-ops` (editing a file that is
+both the source and the live artifact).
+
+**Limits stated to him:** placed loops are in-memory (reload clears them, like the sequencer's PLACE); a
+placed loop cannot yet be slid along the lane (remove and re-place); the pad drawer covers the bottom of
+the timeline, though the SAMPLE lane is the second row and stays visible.
