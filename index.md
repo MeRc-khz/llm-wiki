@@ -2,7 +2,7 @@
 
 > Content catalog. Every wiki page is listed under its type with a one-line summary.
 > Read this first to find relevant pages for any query.
-> Last updated: 2026-10-24 | Total pages: 47
+> Last updated: 2026-11-08 | Total pages: 51
 
 ## Entities
 - [[ballademix]] — A gamified Solana NFT collection featuring generative beats, cryptographic wallet hunts, and a video portal.
@@ -24,6 +24,7 @@
 - [[paperclip-agent-roster]] — The core Paperclip agent roles (Coder, QA, UX, Security) mapped into standardized AIEOS formats.
 - [[quantum-mechanix]] — Cyberpunk noir microdrama premise centered on Kirk Kilohertz and decentralized Fanbase distribution.
 - [[roachcoach]] — A Progressive Web Application (PWA) from Houston, TX, integrating GPS positioning and gamified food truck swiping.
+- [[the-deck-saas-platform]] — bzrlxnzzz's social music SaaS: musicians upload a deck (tempo, melody, drums, master, stems), the platform chops pads and places clips, and the artist runs a campaign tying social platforms to NFT video releases. Admin dashboard at /daw/admin/.
 - [[the-conglomerate-group]] — The apex parent hold-co and philanthropic umbrella corporation managing all platform divisions, projects, and agent teams.
 - [[runpod-flash]] — Python SDK for cloud-native GPU/CPU AI/ML endpoints: auto-scaling workers, per-second billing, 4 endpoint patterns, 15 datacenters, GPU pools from 16GB to 180GB VRAM.
 - [[svgdad]] — Savage Dad streetwear storefront: Angular PWA at svgdad.store, dark street theme (Sunburn Orange/Earthy Tan), Shopify integration.

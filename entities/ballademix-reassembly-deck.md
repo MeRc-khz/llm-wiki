@@ -1,7 +1,7 @@
 ---
 title: Ballademix Reassembly Deck
 created: 2026-10-25
-updated: 2026-10-25
+updated: 2026-11-08
 type: entity
 tags: [music, agentic, video]
 sources: []
@@ -107,8 +107,30 @@ and relabel once they exist.
 - **HTTPS was missing**, so Chrome auto-upgraded and the deck died on `chrome-error://`. Certbot now
   covers `ballademicz.com/.store/.shop/.us`. Never test a browser page over plain HTTP and trust the result.
 
+## Current state (2026-11-08)
+
+The deck has moved on from the original 25-lane / 297 s release. It is now a **21-lane, 92-bar / 245.33 s**
+deck at **90 BPM**, and it is the engine behind [[the-deck-saas-platform]].
+
+| Change | State |
+|---|---|
+| Lane count | **21** — master + 17A SAMPLE + 17B MELODY + 18 chopped stems. The four lanes with no 92-bar chop (`segment_02, _20, _21, _24`) were **removed**. |
+| Master row height | **3× the other lanes** — 186 px vs 62 px. Row layout, hit-testing, clip drawing, trim handles, drag overlay, scrollbar and wheel scrolling all use per-row height. |
+| Loop region | The ruler carries a loop with drag handles. Dragging a grip moves a boundary, dragging the band slides the whole loop, `LOOP` wraps playback at the loop end. The pad sequencer takes its length from the loop (4-bar loop → 4 bars / 64 steps). |
+| Numbering | Ruler labels, master clock, seq playhead and loop label are **1-indexed**, matching the sequencer. The old split convention made A04 read "bar 6" on the timeline and "BAR 7" in the seq. |
+| SAMPLE lane switch | `PADS` / `ORIG` in three places (header, lane pill, drawer header), one state (`PADSEQ.on`). Persists in the deck payload. |
+| Leading silence | Every stem trimmed to its first audible sample on load; `TRIM SILENCE` re-runs it. Idempotent. 19 stems carried heads totalling 1259.894 s. |
+| Snap | `SNAP` cycles BAR / BEAT / TICK (default TICK). Sliding a clip and both trim handles land on the grid; readout speaks bar:beat:tick. |
+| Audio fix | `audio/segment_17a.mp3` was a **dead export** (245.33 s, peak 0.0000). Rebuilt from `segment_17.mp3`'s first 92 bars — corr 1.0000 with both 17A and pad A01. Silent original backed up at `/root/.hermes/cache/scratch/segment_17a_silent.bak.mp3`. |
+| Admin dashboard | `/daw/admin/`, single file, IndexedDB `thedeck-admin`. Campaign, stem photos as data URLs, stem lyrics, video NFT manifest. See [[the-deck-saas-platform]]. |
+
+**Still open:** pads run to 98 bars against a 92-bar master (default cap); five stems overrun bar 92
+(`03, 04, 05, 06, 15`, default re-cut); master lane plays `segment_01` while pads tile `segment_17`
+(default re-cut pads); gamified layer (combo/streak, 24 levels, stars, leaderboard) not built.
+
 ## Related
 
+* [[the-deck-saas-platform]] — the social music SaaS product line built on this engine.
 * [[ballademix]] — the parent project and its Solana NFT mechanics.
 * [[bzrlnx-paperchasers-campaign]] — the social serial whose 24 clips are the same stems.
 * [[bzr-intro-component]] — the canvas intro used as the brand sting on the campaign clips.
