@@ -1,7 +1,7 @@
 ---
 title: The Deck — Social Music SaaS Platform
 created: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-11
 type: entity
 tags: [music, monetization, video, solana, agentic]
 sources: []
@@ -44,6 +44,32 @@ Source: `/var/www/ballademicz/html/daw/` (git repo `MeRc-khz/ballademix`, branch
 4. **Trims leading silence.** Each stem is trimmed to its first audible sample on load and its clip
    moves to that sample's real timeline position; `TRIM SILENCE` re-runs the pass over every lane and
    every duplicate clip. It is idempotent.
+5. **Bounded trim handles.** Dragging a clip's head cannot pass its first audible sample (the `lead`),
+   and the tail cannot pass the source end. Both schedulers also hard-clamp `offset`/`dur` to the
+   buffer window, so an out-of-range read can no longer wrap and replay the opposite end of the sample
+   (the "drag the begin, hear the end" bug).
+
+## Deck builder (admin dashboard)
+
+The admin's **Deck Builder** tab is a form over the deck's autosave slot
+(`ballademix-daw` / store `deck` / record name `__last__`). It reads the saved payload, renders one
+control group per lane, and writes the edited payload back. The deck applies it on the next reload.
+
+Per lane:
+
+* **Start — bar:beat:tick** (bar 1-indexed, beat 1–4, tick 1–16) writes `at`.
+* **Length — bar:beat:tick** (bar 0-indexed, beat 0–3, tick 0–15) writes `dur`.
+* **Trim head (s)** writes `offset`, clamped to `[lead, buffer − 1 tick]`.
+* **+ front / + back** reveal *n* ticks of audio before the head or after the tail, clamped to the real
+  source window. A no-op reports why ("head sits at the lead" / "tail sits at the source end").
+* **Apply** commits the form to the lane; **Reset** restores the saved values; **Revert edits** reloads
+  the whole saved payload.
+
+**Save deck** writes the payload with `adjusted: true`, which tells the deck to skip its legacy
+trim-repair heuristics so hand-set `at`/`dur`/`offset` survive a reload. The optional **Also update
+template targets** checkbox also rewrites the calibrated `template` map so the game layer's targets
+follow the new alignment. The payload also now carries per-lane `lead` and `buf` so the builder can
+bound its controls to the real audio.
 
 ## Campaign layer (admin dashboard)
 
@@ -62,9 +88,26 @@ Stats count stems / photos / lyrics so the owner can see what is still missing.
 
 ### Video NFT manifest
 `buildManifest()` emits JSON: platform, version, generatedAt, the campaign block (including the dated
-schedule), and a per-stem block with `id, label, title, kind, bars, audio, photo, lyrics, video` plus an
-`nft` object (`name, description, image, animation_url, attributes[]`). Download as
-`the-deck-manifest-YYYY-MM-DD.json`, or copy to clipboard.
+schedule), and a per-stem block with `id, label, title, kind, bars, audio, photo, lyrics, video`, a
+`timeline` block (`start`, `end`, `lengthSeconds`, `lengthBars`, `startBBT`, `endBBT`, `snapped`), plus
+an `nft` object (`name, description, image, animation_url, attributes[]`). Download as
+`the-deck-manifest-YYYY-MM-DD.json`, or copy to clipboard. The timeline is read from the deck's live
+autosave payload, so admin alignment edits flow straight into the NFT manifest.
+
+### Deck builder verified live (2026-11-11, headless Chrome against the live URL)
+
+| Check | Result |
+|---|---|
+| Form render | 2 synthetic lanes rendered with correct start/length readouts (`1:1:01`, `92:0:00`) |
+| Start edit | `segment_03` moved to bar 51:1:1 = 133.333 s; readout and end updated |
+| Length edit | 10 bars 2 beats = 28.000 s; end 161.333 s |
+| + back (4 ticks) | length 28.000 → 28.667 s |
+| + front (4 ticks) | start 133.333 → 132.667 s, offset 140 → 139.333 |
+| Save deck | payload written with `adjusted: true`, `at 130`, `dur 29.3333`, `offset 139.3333` |
+| Template checkbox | `template.segment_03` rewritten to 130 |
+| Revert edits | form returned to the saved 130 after a 106 edit |
+| Deck reload | live deck applied `at 130 / dur 29.3333 / offset 139.3333`; `fmtBBT(159.3333)` = `60:4:01` |
+| Manifest | stem 03 `start 130`, `startBBT 49:4:01`, `endBBT 60:4:01` |
 
 ### Verified live (2026-11-08, headless Chrome against the live URL)
 
