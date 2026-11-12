@@ -2,7 +2,7 @@
 
 > Content catalog. Every wiki page is listed under its type with a one-line summary.
 > Read this first to find relevant pages for any query.
-> Last updated: 2026-11-08 | Total pages: 51
+> Last updated: 2026-11-12 | Total pages: 52
 
 ## Entities
 - [[ballademix]] — A gamified Solana NFT collection featuring generative beats, cryptographic wallet hunts, and a video portal.
@@ -55,6 +55,7 @@
 - [[lawnczar-agentic-route-planning]] — In-app LLM-optimized multi-stop itinerary rendering for LawnCzar using OSRM + agent stop ordering.
 - [[lawnczar-qr-referral-network]] — QR-powered crypto affiliate network: users get Solana wallets + QR codes, earn 5% commission on purchases from scanned referrals.
 - [[lawnczar-auto-region-provisioning]] — Auto-provisions self-hosted OSRM routing per zip code when affiliates sign up: osmium slice → osrm-extract → osrm-contract → Docker container.
+- [[the-deck-catalog-saas-structure]] — The Deck's project structure: user → catalog → album → song → deck, with the feed, favorites, arrangement workspace, and master/stem ownership model.
 
 ## Comparisons
 - [[rag-vs-llm-wiki]] — RAG vs. the LLM Wiki Pattern: when synthesis happens and who pays the compute.

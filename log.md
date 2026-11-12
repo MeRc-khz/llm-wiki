@@ -1066,3 +1066,12 @@ both the source and the live artifact).
 **Limits stated to him:** placed loops are in-memory (reload clears them, like the sequencer's PLACE); a
 placed loop cannot yet be slid along the lane (remove and re-place); the pad drawer covers the bottom of
 the timeline, though the SAMPLE lane is the second row and stays visible.
+
+## [2026-11-12] create | The Deck — Catalog SaaS Product Structure
+- New concept page: `concepts/the-deck-catalog-saas-structure.md`
+- Defines the project hierarchy User → Catalog (public profile) → Album → Song (a deck: tempo + master + melody + drums + stems)
+- Feed (discovery), favorites (listener library), deck arrangement workspace (unlocked clips, bar:beat:tick)
+- Ownership/monetization: buy master track, unlock/buy stems (per-stem NFT gate), album bundles, campaign drops
+- Data model + routes + build order + open decisions
+- Updated `entities/the-deck-saas-platform.md` with a product-structure summary and a link to the new page
+- Updated `index.md` (52 pages)

@@ -1,7 +1,7 @@
 ---
 title: The Deck — Social Music SaaS Platform
 created: 2026-11-08
-updated: 2026-11-11
+updated: 2026-11-12
 type: entity
 tags: [music, monetization, video, solana, agentic]
 sources: []
@@ -71,6 +71,23 @@ template targets** checkbox also rewrites the calibrated `template` map so the g
 follow the new alignment. The payload also now carries per-lane `lead` and `buf` so the builder can
 bound its controls to the real audio.
 
+## Product structure — catalog, albums, songs
+
+The full project structure is defined in [[the-deck-catalog-saas-structure]]. In short:
+
+```
+User → Catalog (public profile) → Album → Song (a deck: tempo + master + melody + drums + stems)
+```
+
+* **Catalog** — the user's site profile at `/{handle}`; albums, songs, bio, followers.
+* **Album** — a collection of songs with cover, release date, description.
+* **Song** — one deck. The master track is the full song (buy); the stems are the clips (unlock / buy).
+* **Feed** — newly published songs across catalogs, each card carrying play / favorite / load-into-deck.
+* **Favorites** — the listener's library and the bridge from discovery to arrangement.
+* **Deck** — the listener's saved arrangement of a song's unlocked clips, on the bar:beat:tick grid.
+* **Ownership** — master NFT + per-stem NFTs (the existing `nft/gate.js` gate), with album bundles and
+  campaign drops as additional revenue paths.
+
 ## Campaign layer (admin dashboard)
 
 The admin page is a **single-file** dashboard at its own route (`/daw/admin/`). Persistence is browser
@@ -139,6 +156,7 @@ request object can never be adopted as state.
 4. **Gamified layer not built** — combo/streak, 24 levels, stars, leaderboard.
 
 ## Related
+* [[the-deck-catalog-saas-structure]] — the catalog → album → song → deck hierarchy, feed, favorites, and ownership/monetization model.
 * [[ballademix-reassembly-deck]] — the single-file fake DAW this product line runs on.
 * [[ballademix]] — the parent record and Solana NFT mechanics.
 * [[bzrlnx-paperchasers-campaign]] — the social serial whose clips are the same stems.
