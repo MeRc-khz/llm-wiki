@@ -1,7 +1,7 @@
 ---
 title: The Deck — Catalog SaaS Product Structure
 created: 2026-11-12
-updated: 2026-11-12
+updated: 2026-11-13
 type: concept
 tags: [music, monetization, solana, community, workflow, infrastructure]
 sources: []
@@ -77,6 +77,28 @@ The current deck's admin **Deck Builder** (per-lane `at`/`dur`/`offset`, extend 
 autosave payload) is the prototype for this workspace. See [[the-deck-saas-platform]] for the shipped
 controls.
 
+## Arrangements — the unit that is actually shared
+
+A song is not one placement, it is many. **Arrangements** are named saved placements of a song's deck;
+they are the sharable asset.
+
+```
+song
+├── master arrangement      first, all clips unlocked, placed from the admin TEMPLATE
+└── (N) user arrangements   forks; each user names their own
+```
+
+Buying the master track unlocks the master track, **the master arrangement**, and every clip. A listener
+who has not bought still gets the `alwaysOn` reference lanes (drum bed + sample) plus whatever stems they
+hold, and can save their own arrangements over that base.
+
+Creators protect a song's essence with **lane locks** — at lane, drum-voice, or clip scope. A locked lane
+is audible and visible but refuses edits from anyone but the owner; unlocked lanes stay free for the
+listener to add drums, upload samples, record vocals, and add piano-roll instrument tracks.
+
+Two users can also open the same drum sequencer over a **peer connection with one shared clock**, so a
+drum pattern can be built live together. Full model: [[the-deck-arrangements-lane-locks]].
+
 ## Ownership and monetization
 
 Two purchase paths per song:
@@ -111,8 +133,13 @@ stems        id, song_id, label, asset_id, bars, lead, offset,
              price, mint
 assets       id, kind (master|stem|melody|drums|photo|video),
              url, duration, bytes, checksum
-decks        id, user_id, song_id, title, created_at, updated_at
-clips        id, deck_id, stem_id, at, dur, offset, muted, solo, vol, pan
+arrangements  id, song_id, user_id, name, is_master, forked_from,
+             visibility, tempo, created_at, updated_at
+lanes        id, arrangement_id, lane_id, kind, at, dur, offset,
+             muted, solo, vol, pan, channel, program
+notes        id, lane_id, pitch, start, dur, vel
+lane_locks   id, song_id, scope (lane|voice|clip), target, locked_by
+collab_sessions id, song_id, host_id, guest_id, signaling, started_at
 favorites    id, user_id, song_id, created_at
 follows      id, follower_id, artist_id
 unlocks      id, user_id, song_id, stem_id, kind (master|stem),
@@ -123,8 +150,10 @@ releases     id, campaign_id, song_id, stem_id, date,
              photo, lyrics, video, mint
 ```
 
-`clips.at/dur/offset` are the same fields the deck already persists. The admin's Deck Builder writes
-them; the catalog layer just owns the `deck` record instead of a single browser's autosave slot.
+`arrangements` records are the same placement data the deck already persists (`at`/`dur`/`offset`, mixer
+state, MIDI notes). The admin's Deck Builder writes them; the catalog layer owns the record instead of a
+single browser's autosave slot. A `notes` row is a drum hit or a piano-roll note — same
+`[pitch, start, dur, vel]` tuple either way.
 
 ## Routes
 
@@ -157,13 +186,15 @@ them; the catalog layer just owns the `deck` record instead of a single browser'
 4. **Stem ownership model** — NFT per stem (current) vs. license key vs. both. Default: NFT + license
    record.
 5. **Arrangement ownership** — can a listener sell or share an arrangement? Default: share link only;
-   no resale until the licensing model is settled.
+   no resale until the licensing model is settled. Resolved further in
+   [[the-deck-arrangements-lane-locks]]: arrangements are the sharable asset, favoriting is not unlocking.
 6. **Private catalogs** — does a private catalog hide its songs from the feed? Default: yes, unless the
    song is explicitly published.
 
 ## Related
 
 * [[the-deck-saas-platform]] — the shipped product, admin dashboard, and Deck Builder.
+* [[the-deck-arrangements-lane-locks]] — arrangements, the master arrangement, lane/voice locks, layering, and P2P drum collaboration.
 * [[ballademix-reassembly-deck]] — the single-file deck engine this SaaS runs on.
 * [[ballademix]] — the parent NFT collection and Solana mechanics.
 * [[tokenized-equity]] — the ownership/tokenization framework if catalog equity is fractionalized.

@@ -1,7 +1,7 @@
 ---
 title: The Deck — Social Music SaaS Platform
 created: 2026-11-08
-updated: 2026-11-12
+updated: 2026-11-13
 type: entity
 tags: [music, monetization, video, solana, agentic]
 sources: []
@@ -88,6 +88,24 @@ User → Catalog (public profile) → Album → Song (a deck: tempo + master + m
 * **Ownership** — master NFT + per-stem NFTs (the existing `nft/gate.js` gate), with album bundles and
   campaign drops as additional revenue paths.
 
+## Arrangements, locks, and live collaboration
+
+The next layer up from the catalog is defined in [[the-deck-arrangements-lane-locks]]:
+
+* **Arrangements are the sharable asset.** Each song has a **master arrangement** (first, all clips
+  unlocked, placed from the admin `TEMPLATE`) and any number of named user arrangements forked from it.
+  Buying the master track unlocks the master track, the master arrangement, and every clip.
+* **Unpaid players are not blocked.** They get the `alwaysOn` reference lanes (drum bed + sample) and any
+  stems they hold, and can save their own arrangements over that base.
+* **Lane locks preserve the essence.** Creator locks a lane, a drum voice (hi-hat / snare / kick), or a
+  single clip; the lock blocks edits by others but never mutes or hides the lane. Everything unlocked
+  stays free for the listener to add drums, upload samples, record device vocals, and add piano-roll
+  instrument tracks.
+* **A song can be one drum pattern.** The minimal publishable song is a deck with a single MIDI drum
+  sequence lane and no audio — its first arrangement is the pattern from the drum sequencer.
+* **P2P drum collaboration.** Two users open the same sequencer over a WebRTC data channel with one
+  host-authoritative clock; edits travel as events, audio never crosses the wire.
+
 ## Campaign layer (admin dashboard)
 
 The admin page is a **single-file** dashboard at its own route (`/daw/admin/`). Persistence is browser
@@ -157,6 +175,7 @@ request object can never be adopted as state.
 
 ## Related
 * [[the-deck-catalog-saas-structure]] — the catalog → album → song → deck hierarchy, feed, favorites, and ownership/monetization model.
+* [[the-deck-arrangements-lane-locks]] — named arrangements, the master arrangement, lane/voice locks, listener layering, and P2P drum collaboration.
 * [[ballademix-reassembly-deck]] — the single-file fake DAW this product line runs on.
 * [[ballademix]] — the parent record and Solana NFT mechanics.
 * [[bzrlnx-paperchasers-campaign]] — the social serial whose clips are the same stems.

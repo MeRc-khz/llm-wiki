@@ -1075,3 +1075,23 @@ the timeline, though the SAMPLE lane is the second row and stays visible.
 - Data model + routes + build order + open decisions
 - Updated `entities/the-deck-saas-platform.md` with a product-structure summary and a link to the new page
 - Updated `index.md` (52 pages)
+
+## [2026-11-13] create | The Deck — Arrangements, Lane Locks, and Realtime Collaboration
+- New concept page: `concepts/the-deck-arrangements-lane-locks.md`
+- Arrangements as the sharable asset: per song, one **master arrangement** (first, all clips unlocked,
+  placed from the admin TEMPLATE) plus N named user arrangements forked from it. Buying the master track
+  unlocks master track + master arrangement + all clips.
+- Unpaid players keep the `alwaysOn` reference lanes (drum bed + SAMPLE, never gated per
+  `nft/stems.json` / `nft/gate.js:137`) plus owned stems, and can save their own arrangements over them.
+- Lane locks at three scopes — lane, drum voice (hi-hat/snare/kick by pitch), clip. A lock is a write
+  permission, never a mute or a gate.
+- Listener layering surface: add to drums, upload a sample, record device vocals, add a piano-roll
+  instrument track (SpessaSynth + GeneralUserGS is already armed).
+- Minimal song = a deck with one MIDI drum sequence lane and no audio; first arrangement = the pattern.
+- P2P drum collaboration: one host-authoritative clock over a WebRTC data channel, edits as events with a
+  version counter, audio never on the wire, Nostr relay as signalling.
+- Data model: `arrangements`, `arrangement_lanes`, `arrangement_notes`, `lane_locks`, `collab_sessions`;
+  replaces the browser-local `deck` preset record.
+- Updated `concepts/the-deck-catalog-saas-structure.md` (arrangements section, data model, related) and
+  `entities/the-deck-saas-platform.md` (summary section, related).
+- Updated `index.md` (53 pages)
