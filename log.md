@@ -1095,3 +1095,21 @@ the timeline, though the SAMPLE lane is the second row and stays visible.
 - Updated `concepts/the-deck-catalog-saas-structure.md` (arrangements section, data model, related) and
   `entities/the-deck-saas-platform.md` (summary section, related).
 - Updated `index.md` (53 pages)
+
+## [2026-11-13] update | The Deck — RESET + SOLVE shipped; decisions resolved
+- Shipped on the live deck (`ballademicz.com/daw/`, commit `ffd38bc`, pushed, site 200, `.git` 404):
+  **RESET** (every unlocked lane + every placed duplicate back to 0:00) and **SOLVE** (every unlocked
+  clip placed on its master-arrangement position in one action). RESET replaces ZERO ALL, which skipped
+  duplicates and never autosaved.
+- Master track = master arrangement, and it is the answer key for forks.
+- Locks hold through both actions; lanes with no master position (17a SAMPLE, 17b MELODY) are left alone.
+- Placed tick made truthful: parking a clip off target clears `solved`; `solved` is derived from
+  `at`-vs-`target` on restore instead of trusted from the snapshot.
+- Verified live in headless Chrome through the real buttons: 18/18 on target after SOLVE, locked lane held
+  at 41.5 s through RESET, duplicate returned to 0:00, autosave 20 tracks, reload restored 18/18 with the
+  score derived, parked clip dropped the score to 17/18, 0 console errors.
+- Decisions resolved in `concepts/the-deck-arrangements-lane-locks.md`: master immutability (no — a change
+  is a new arrangement), lock escape (creator unlocks at will; a contributor can lock their own
+  contribution inside their own fork), collab persistence (two forks, one per peer). Arrangement resale
+  and vocal storage keep their defaults. Section renumbered; new §2 "Placing an arrangement".
+- Updated `entities/the-deck-saas-platform.md` with the controls and the verified table.

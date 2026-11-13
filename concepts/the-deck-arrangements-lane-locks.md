@@ -33,6 +33,8 @@ Every song is born with one arrangement:
 * all clips are **unlocked and in place**, laid out from the admin's calibrated `TEMPLATE` bar map
 * it is named `master`
 * buying the master track unlocks **the master track, the master arrangement, and every clip**
+* the master track and the master arrangement are the same object — the track is the audio, the
+  arrangement is its placement. See §2.
 
 **What a listener without the master gets**
 
@@ -46,7 +48,29 @@ placement and from the clips they don't own. They still compose, still save, sti
 
 A user keeps **N named arrangements per song**, each forkable from any arrangement they can play.
 
-## 2. Creating a song from the user admin
+## 2. Placing an arrangement — RESET and SOLVE
+
+The **master track and the master arrangement are the same object seen twice**: the track is the audio,
+the arrangement is its placement. Both come from the creator's calibrated `TEMPLATE` map, so the master
+arrangement is also the **answer key** for every fork. Two actions read it:
+
+| Action | What it does |
+|---|---|
+| **RESET** | Every unlocked lane *and every placed duplicate* goes back to `0:00`, so the user can drag the pieces into position by hand. |
+| **SOLVE** | Places **every unlocked clip on its master-arrangement position** in one action — one drag per clip replaced by one press. |
+
+They are complements: reset then solve, or reset then place by hand. Neither is a guess — a lane with no
+master position (the `alwaysOn` SAMPLE and MELODY lanes carry no `TEMPLATE` entry) is left exactly where
+the user put it and reported as such, and a lock holds through both. A clip parked off its target loses
+its placed tick, so the count on screen never claims a placement the timeline does not have.
+
+Shipped on the live deck (2026-11-13, commit `ffd38bc`): `RESET` and `SOLVE` sit together in the header,
+visible in simple mode. `SOLVE` landed 18 of 18 lanes with master positions exactly on target and left
+the 2 without one alone; `RESET` returned 18 clips (lanes + duplicates) to `0:00` while a locked lane
+held at `41.5 s`; a reload restored all 18 placements with the score derived, not remembered.
+
+
+## 3. Creating a song from the user admin
 
 `user admin → album → add song`. Two entry shapes:
 
@@ -68,7 +92,7 @@ It is also nearly free to build, because the engine already supports a lane with
 A song with `lanes = [midiDrum]` and no `assets` is therefore a legal song. It is also the cheapest thing
 to mint: one pattern, one asset.
 
-## 3. Lane locks
+## 4. Lane locks
 
 The creator **locks what must survive** downstream arrangement. Three scopes:
 
@@ -88,11 +112,19 @@ lane would also freeze the listener's own additions, which is the opposite of th
 sequencer already addresses voices by pitch (`DS_NAMES` in `index.html:2488`), so a voice lock is a
 `Set` of pitches filtered out of the edit path.
 
+Locks live at two levels, and the difference is who they protect:
+
+* **Song locks** — set by the creator, they apply to the song and every fork of it. This is the essence
+  the creator is protecting.
+* **Fork locks** — a contributor can lock **their own contribution inside their own fork** (the lane they
+  added, the sample they uploaded, the vocal they recorded). Their fork is theirs; the lock keeps a
+  collaborator or a remix of that fork from rewriting it.
+
 The engine already has the lane-level primitive: the master is `locked:true, muted:true` by definition
 (`index.html:344`), and a not-yet-dropped stem self-locks (`index.html:2122`). Locks generalize that
 flag to voice and clip scope.
 
-## 4. The listener's layering surface
+## 5. The listener's layering surface
 
 Over the locked base, a favoriter (or any player of the song) can add:
 
@@ -109,7 +141,7 @@ those notes use the same `[pitch, start, dur, vel]` tuple the drum lane already 
 generalizes to a piano roll by swapping the percussion pitch axis for a chromatic one; the transport,
 scheduling, and persistence layers are unchanged.
 
-## 5. Realtime: two users, one drum clock
+## 6. Realtime: two users, one drum clock
 
 **P2P drum sequencer collaboration** — both users hold the sequencer open, one shared clock, edits land
 on both.
@@ -132,7 +164,7 @@ the edits.
 The payoff: latency shows up as a few milliseconds of grid offset on one hit, never as drift, because
 there is one origin and each side's read of it is local.
 
-## 6. Data model additions
+## 7. Data model additions
 
 ```
 arrangements        id, song_id, user_id, name, is_master, forked_from,
@@ -148,7 +180,7 @@ collab_sessions     id, song_id, host_id, guest_id, signaling, started_at, ended
 `is_master = true`. `arrangement_notes` is the drum pattern or piano roll payload, keyed per lane so one
 song can carry a drum lane and a piano lane independently.
 
-## 7. Ownership rules, restated
+## 8. Ownership rules, restated
 
 | Actor | Can play | Can arrange | Can lock |
 |---|---|---|---|
@@ -161,25 +193,29 @@ Revenue paths are unchanged: master track (which now carries the master arrangem
 per-stem unlock, album bundle, campaign drop. The master arrangement is what makes the master purchase
 worth more than the audio — a buyer gets the authored placement, not a pile of clips.
 
-## 8. Build order
+## 9. Build order
 
 1. **`arrangements` table** + name / fork / save in the deck — replaces the single `__last__` slot.
 2. **Master arrangement generated at song creation** from the calibrated `TEMPLATE` map.
+   *Shipped in the deck ahead of the table:* `RESET` + `SOLVE` (commit `ffd38bc`) already place a fork
+   from the master arrangement on the deck's single autosave slot. The table only changes where the
+   record lives.
 3. **Lane + voice locks** — stored on the song, enforced in the drag/trim handles and in `drumseq`.
 4. **Drum-sequencer-only song** — album → song → pattern, no audio assets required.
 5. **Sample upload + device recording** — feed the pads and a new `vocal` lane.
 6. **Piano roll track** — instrument lane on SpessaSynth, chromatic grid.
 7. **WebRTC drum clock** — host-authoritative, relay signalling, edit events.
 
-## 9. Open decisions
+## 10. Open decisions
 
-1. **Master immutability** — can the owner edit the master arrangement after the first sale? Default: no.
-   Post-release edits create a new version; the sold master row is frozen, because buyers bought that
-   alignment.
-2. **Lock escape** — can a listener ask the creator to unlock a voice? Default: no; the creator unlocks at
-   will, and arrangements already forked keep the lock state they were created under.
-3. **Arrangement resale** — default: share link only, no resale until licensing settles.
-4. **Collab persistence** — one merged arrangement or two? Default: two forks, each peer saves its own.
+Decided 2026-11-13:
+
+1. **Master immutability** — resolved: the master track *is* the master arrangement, and it is the answer
+   key for forks. It is not edited after release; a change is a new arrangement. (§2)
+2. **Lock escape** — resolved: no request flow. The creator unlocks at will, and **a contributor can lock
+   their own contribution inside their own fork**. Forks keep the lock state they were created under. (§4)
+3. **Collab persistence** — resolved: **two forks, one per peer**; each peer saves their own. (§6)
+4. **Arrangement resale** — default: share link only, no resale until licensing settles.
 5. **Vocal storage** — default: uploaded as a private asset, never surfaced in the public manifest.
 
 ## Related

@@ -106,6 +106,39 @@ The next layer up from the catalog is defined in [[the-deck-arrangements-lane-lo
 * **P2P drum collaboration.** Two users open the same sequencer over a WebRTC data channel with one
   host-authoritative clock; edits travel as events, audio never crosses the wire.
 
+### RESET and SOLVE (shipped 2026-11-13, commit `ffd38bc`)
+
+The master track *is* the master arrangement — the audio and its placement are one object — so it also
+serves as the answer key for every fork. Two header controls read it:
+
+| Control | Behaviour |
+|---|---|
+| **RESET** | every unlocked lane *and every placed duplicate* back to `0:00`, so the user can place them by hand |
+| **SOLVE** | every unlocked clip placed on its master-arrangement position in one action |
+
+A lock holds through both, and a lane with no master position (the `alwaysOn` SAMPLE and MELODY lanes)
+is left where the user put it and reported as such. `RESET` replaces the old `ZERO ALL`, which skipped
+duplicates and never autosaved; `SOLVE` is new. Both are visible in simple mode and hidden in sequencer
+mode. The placed tick is now truthful: parking a clip off its target clears it, and `solved` is derived
+from `at`-vs-`target` on restore rather than trusted from the snapshot.
+
+Verified live in headless Chrome through the real buttons (2026-11-13):
+
+```
+controls        RESET block   SOLVE block          lanes 21  unlocked 20  master positions 18
+
+RESET           lanes not at 0: none               toast "17 clips back at 0:00"
+                locked lane segment_16 held at 41.5 s
+                duplicate on segment_16 also back to 0:00
+SOLVE           18/18 exactly on the master position
+                no master position, left alone: 17a SAMPLE, 17b MELODY (at 0)
+                fScore "18/18 placed"
+autosave        20 tracks written, segment_03 at 136
+reload          18/18 back on target, score 18, segment_03 solved true
+parked at 100   segment_03 solved false, fScore "17/18 placed"
+console errors  0
+```
+
 ## Campaign layer (admin dashboard)
 
 The admin page is a **single-file** dashboard at its own route (`/daw/admin/`). Persistence is browser
