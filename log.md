@@ -1113,3 +1113,40 @@ the timeline, though the SAMPLE lane is the second row and stays visible.
   contribution inside their own fork), collab persistence (two forks, one per peer). Arrangement resale
   and vocal storage keep their defaults. Section renumbered; new §2 "Placing an arrangement".
 - Updated `entities/the-deck-saas-platform.md` with the controls and the verified table.
+
+## [2026-11-14] create | The Deck — H.O.R.S.E. on the Drum Sequencer (game design)
+- New concept page: `concepts/deck-horse-sequencer-game.md` — the peer-to-peer sequencer game.
+- Basketball H.O.R.S.E. as call-and-response memory: the setter draws a drum pattern, the matcher
+  reproduces it from memory after a timed LISTEN phase, each round adds a bar, three misses ends the match
+  (the basketball spelling is five letters; three is the owner's call and a single knob).
+- Judging is a DIFF, not pass/fail — missing / extra / wrong voice / wrong velocity band — because the
+  player has to see what they got wrong and the diff is what "reveal a voice" shows.
+- Power-ups: pass (decline to set, no strike), 2x time (doubles the REMAINING listen window), reveal a
+  voice (one pitch row). Earn one per win, cap 3.
+- Network: rides the parent page's shared-clock rule — one host as single writer owns the transport origin,
+  receives the matcher's submission and broadcasts the verdict; the setter's pattern travels as a snapshot
+  on round start, never as a stream of edits; the target is dropped from the matcher's client at REPRODUCE
+  (client-side, stated honestly).
+- Cites the real engine it will reuse: `lib/drumseq.js` (createDrumSeq, 16 steps/bar, the `[pitch, start,
+  dur, vel]` tuple, `load`/`export`), `lib/store.js` `drums` record, `index.html` drum host + SpessaSynth +
+  `DS_NAMES` + `drumPayload`. Every cited line number was re-checked against the file after the
+  ARRANGEMENTS build landed.
+- Cross-linked from `concepts/the-deck-arrangements-lane-locks.md` §6; `index.md` now 54 pages.
+
+## [2026-11-14] update | The Deck — ARRANGEMENTS drawer shipped (save / load / fork)
+- Shipped on the live deck (`ballademicz.com/daw/`, commit `c7985a6`, pushed, site 200, `.git` 404, served
+  file hash == committed file): **ARRANGEMENTS** — SAVE CURRENT writes every lane's placement, the mixer,
+  the drum pattern and the sample arrangement under a name; LOAD applies one; FORK copies one into a new
+  name so an edit cannot touch the source. The **master arrangement** is listed first, read-only, with
+  SOLVE and FORK — it is the thing you fork from.
+- Saved arrangements carry `adjusted: true` so the restore pass keeps their numbers instead of running the
+  legacy trim heuristics over a deliberate placement. The autosave now writes the same flag (the current
+  build trims and places on load, so what it writes is authored state) and carries the on-screen
+  arrangement's name, so the drawer still says which one you are in after a reload.
+- Verified live in headless Chrome through real clicks: drawer opens with the master row + an empty-state
+  line; SAVE CURRENT wrote `v2 / adjusted true / 20 lanes / 18 placed` exactly matching the screen; RESET
+  put 18/18 lanes at 0:00 and LOAD restored them identically (18/18); FORK master wrote
+  `forkedFrom: master`; FORK of a saved arrangement copied it and left the source byte-identical on
+  `at`/`offset`; re-saving the same name updated in place (3 records, no duplicate); RELOAD kept the
+  autosaved placement (18/18 at 0:00 after RESET, 18/18 on target after SOLVE), the records, and the
+  current-arrangement label; DEL removed one record; 0 console errors.

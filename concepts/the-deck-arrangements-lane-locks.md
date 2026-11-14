@@ -164,6 +164,10 @@ the edits.
 The payoff: latency shows up as a few milliseconds of grid offset on one hit, never as drift, because
 there is one origin and each side's read of it is local.
 
+The first game built on this clock is specified in [[deck-horse-sequencer-game]] — basketball H.O.R.S.E.
+as call-and-response memory: the setter draws a drum pattern, the matcher reproduces it from memory, and
+each round adds a bar.
+
 ## 7. Data model additions
 
 ```
