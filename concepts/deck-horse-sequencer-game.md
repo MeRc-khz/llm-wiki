@@ -32,7 +32,7 @@ lane (`TRACKS` has no `midiDrum` entry) — a drum-sequencer song is still the u
 the API. One transport, owned by the page and read by the sequencer, exactly as the deck runs it.
 
 The matcher never plays audio of their own — they enter steps into the grid and submit; the host replays
-both. One transport (`lib/drumseq.js:1-22`), one owner (`index.html:2677-2700`).
+both. One transport (`lib/drumseq.js:1-22`), one owner (`index.html` `initDrums()` (`createDrumSeq` host)).
 
 ## 2. Match structure
 
@@ -102,7 +102,7 @@ Three, one of each available at match start.
 **2× time** doubles what is left, not the whole N — adopting it late gets less.
 
 **reveal a voice** exposes one voice's row from the diff/target — a `DS_NAMES` pitch
-(`index.html:2592-2594`) whose cells light up for the matcher.
+(`index.html` `DS_NAMES`) whose cells light up for the matcher.
 
 **Economy (a knob):** one of each at match start; **earn one more per successful match** (the winner
 chooses which), **cap 3**. `POWERUP_EARN_PER_WIN = 1`, `POWERUP_CAP = 3`.
@@ -120,7 +120,7 @@ Rides the shared-clock rule already written in the parent page, [[the-deck-arran
 * **The setter's pattern travels as a snapshot, in one message, on round start.** Never as a stream of
   `noteAdd`/`noteRemove` edits — the game needs the target whole, not its edit history.
 * **Audio never crosses the wire** each peer plays its own local soundfont
-  (`index.html:2605-2617`). The wire carries `[pitch, start, dur, vel]` tuples, not samples.
+  (`index.html` `armDrums()`). The wire carries `[pitch, start, dur, vel]` tuples, not samples.
 * **Transport** a WebRTC data channel, signalling over the Buzz Nostr relay or copy-paste SDP (parent §6).
 * **Target drop.** When REPRODUCE begins, the matcher's client **drops the target pattern** from the live
   edit path — the grid no longer holds it. **Be honest: this is client-side.** A determined player can
@@ -139,13 +139,17 @@ Rides the shared-clock rule already written in the parent page, [[the-deck-arran
 | One clock | `lib/drumseq.js:1-22`, `193-229` | `pump()` fires what the host playhead passes; reads the host, never schedules its own |
 | Transactional swap | `lib/drumseq.js:306-319` | `load(notes, tempo)` rebuilds + `setNotes`; `setNotes` reloads from an array |
 | Preset record | `lib/store.js:8` | `drums` payload = `{ tempo, notes:[[pitch,startSec,durSec,vel],…] }` |
-| Preset I/O | `index.html:3386-3395`, `3436-3448` | `saveDrumPreset` / `loadDrumPreset` (bound to the `drums` store) |
-| Live drum payload | `index.html:3165-3171` | `drumPayload()` → `{ tempo, notes }` from `drumSeq.export()` |
-| Transport the seq reads | `index.html:2677-2700` | the `host` object: `play/stop/position/seek`, `audio.now()`, `noteOn` |
-| Synth (local audio) | `index.html:2605-2617` | `WorkletSynthesizer` + `GeneralUserGS.sf3` on channel 9 |
-| Voice names | `index.html:2592-2594` | `DS_NAMES` maps pitch → name (the "reveal a voice" row label) |
-| Store singleton | `index.html:3150-3160` | `presetStore` = `createStore()`; IndexedDB, localStorage fallback |
+| Preset I/O | `index.html` `saveDrumPreset()` / `loadDrumPreset()` | `saveDrumPreset` / `loadDrumPreset` (bound to the `drums` store) |
+| Live drum payload | `index.html` `drumPayload()` | `drumPayload()` → `{ tempo, notes }` from `drumSeq.export()` |
+| Transport the seq reads | `index.html` `initDrums()` (`createDrumSeq` host) | the `host` object: `play/stop/position/seek`, `audio.now()`, `noteOn` |
+| Synth (local audio) | `index.html` `armDrums()` | `WorkletSynthesizer` + `GeneralUserGS.sf3` on channel 9 |
+| Voice names | `index.html` `DS_NAMES` | `DS_NAMES` maps pitch → name (the "reveal a voice" row label) |
+| Store singleton | `index.html` `initPresets()` | `presetStore` = `createStore()`; IndexedDB, localStorage fallback |
 | Shared-clock design | parent §6 | host-authoritative, local derivation, edits as events |
+
+`index.html` is edited constantly, so it is cited by **symbol**, not by line — a line number there
+goes stale within a day. `lib/drumseq.js` and `lib/store.js` change rarely and keep their line
+numbers.
 
 ## 8. Decisions and what is still open
 

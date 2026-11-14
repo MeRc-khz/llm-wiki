@@ -84,8 +84,8 @@ The drum-sequencer song is the important one: it is the smallest thing a creator
 
 It is also nearly free to build, because the engine already supports a lane with no audio:
 
-* a MIDI lane has no `AudioBuffer` and never will (`index.html:1195`)
-* it drives SpessaSynth on channel 9, sharing the deck's one transport (`index.html:2484`)
+* a MIDI lane has no `AudioBuffer` and never will (`index.html`, the `midiDrum` lane branch)
+* it drives SpessaSynth on channel 9, sharing the deck's one transport (`index.html` `initDrums()`)
 * `drumseq.exportNotes()` yields `[[pitch, startSec, durSec, vel], …]` (`lib/drumseq.js:65`) — the exact
   payload `store.js` already persists as a `drums` preset (`{tempo, notes}`)
 
@@ -109,7 +109,7 @@ owner. Unlocked lanes stay fully editable, and new lanes can always be added on 
 **Voice-level locking is the point.** "The creator makes a drum pattern and locks the hi-hat, the snare,
 and the bass drum to preserve the essence" — the essence lives at the voice level. Locking the whole drum
 lane would also freeze the listener's own additions, which is the opposite of the intent. The drum
-sequencer already addresses voices by pitch (`DS_NAMES` in `index.html:2488`), so a voice lock is a
+sequencer already addresses voices by pitch (`DS_NAMES`, `index.html`), so a voice lock is a
 `Set` of pitches filtered out of the edit path.
 
 Locks live at two levels, and the difference is who they protect:
@@ -121,7 +121,8 @@ Locks live at two levels, and the difference is who they protect:
   collaborator or a remix of that fork from rewriting it.
 
 The engine already has the lane-level primitive: the master is `locked:true, muted:true` by definition
-(`index.html:344`), and a not-yet-dropped stem self-locks (`index.html:2122`). Locks generalize that
+(`index.html`, the `TRACKS` master entry), and a not-yet-dropped stem self-locks
+(`index.html`, the staged-drop seal). Locks generalize that
 flag to voice and clip scope.
 
 ## 5. The listener's layering surface
@@ -136,7 +137,7 @@ Over the locked base, a favoriter (or any player of the song) can add:
 | **a piano roll track + instrument** | SpessaSynth `WorkletSynthesizer` + `GeneralUserGS.sf3`, `programChange` per channel | a piano roll UI |
 
 The instrument track is the cheapest of the four. The synth is already armed with a full General MIDI
-soundfont (`index.html:2502`), so an instrument lane only needs `{channel, program}` plus notes — and
+soundfont (`index.html` `armDrums()`), so an instrument lane only needs `{channel, program}` plus notes — and
 those notes use the same `[pitch, start, dur, vel]` tuple the drum lane already stores. The drum grid
 generalizes to a piano roll by swapping the percussion pitch axis for a chromatic one; the transport,
 scheduling, and persistence layers are unchanged.
