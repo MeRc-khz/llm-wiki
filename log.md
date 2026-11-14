@@ -1150,3 +1150,27 @@ the timeline, though the SAMPLE lane is the second row and stays visible.
   `at`/`offset`; re-saving the same name updated in place (3 records, no duplicate); RELOAD kept the
   autosaved placement (18/18 at 0:00 after RESET, 18/18 on target after SOLVE), the records, and the
   current-arrangement label; DEL removed one record; 0 console errors.
+
+## [2026-11-14] update | H.O.R.S.E. shipped — the game is live at /daw/horse/
+- Built and deployed: `horse/index.html`, commit `2310d1a`, pushed. Live `ballademicz.com/daw/horse/`
+  200, `/daw/` 200, `.git` 404 for both, served bytes == committed bytes. HORSE link added to the deck
+  footer.
+- Decision: a **separate route**, not a deck mode, because the deck ships no MIDI drum lane yet
+  (`TRACKS` has no `midiDrum` entry). The page drives `lib/drumseq.js` **headless** — it never calls
+  `open()`, so the sequencer's editor UI is never mounted, and `toggle` / `export` / `load` / `pump` are
+  the whole API. One transport owned by the page and read by the sequencer, per the shared-clock rule.
+- Engine: SpessaSynth channel 9 from `GeneralUserGS.sf3`, local audio; notes fired were counted (60 + 32
+  across the two verification runs).
+- Owner decisions recorded on the page: time = `bars × 4 s` default, velocity advisory only,
+  extend-or-replace is the winner's choice every round, disconnect = abandoned, strikes = 3.
+- **Behaviour the build added to the spec:** a miss now HOLDS on the verdict. The first cut dropped
+  straight back into SET, so the diff was computed and printed but never painted on the grid — and the
+  whole point of judging by diff is that the player sees what they got wrong. A miss sits in a `verdict`
+  phase with ▲ missing / ▼ extra cells marked and a CONTINUE button.
+- Verified by playing a full match in headless Chrome with dispatched pointer events (not
+  `element.click()`): draw → lock in → 4 s countdown → grid clears with the target hidden → reveal shows
+  2 hint cells without entering them → a wrong submit gives missing 4 / extra 1 and paints the markers →
+  continue → an exact submit gives MADE IT with 0 missing / 0 extra → earn + BUILD ON IT takes it to 2
+  bars with the pattern carried → 2× time doubles the REMAINDER (7.58 → 14.61 s) → PASS swaps the setter
+  with no strike → empty LOCK IN refused → the grid is read-only during the listen → 3 misses ends the
+  match with the winner named and a full reset on the next start. 0 console errors in both runs.

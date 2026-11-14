@@ -19,8 +19,17 @@ Basketball H.O.R.S.E. as call-and-response memory on the drum sequencer: one pla
 matcher reproduces. Builds on the two-user drum session in [[the-deck-arrangements-lane-locks]] §6 (one
 host, one clock, edits as events) and runs on the engine documented in [[ballademix-reassembly-deck]].
 
-**This is a design for an unbuilt feature.** No game code exists; everything below is specified against
-the shipped sequencer and transport it will reuse.
+**Shipped and playable** at `ballademicz.com/daw/horse/` (2026-11-14, commit `2310d1a`): the whole
+match loop — SET → LISTEN → REPRODUCE → diff → role swap → three-strike ending — runs on the shared clock
+in the browser, with the power-ups and the verdict panel live. What is **not** built is the network layer
+in §6: today both players share one keyboard (hot-seat). The round state and the diff are already shaped
+for the wire.
+
+It is a **separate route, not a mode inside the deck**, because the deck currently ships no MIDI drum
+lane (`TRACKS` has no `midiDrum` entry) — a drum-sequencer song is still the unbuilt half of §3 of
+[[the-deck-arrangements-lane-locks]]. The page drives `lib/drumseq.js` headless instead: it never calls
+`open()`, so the sequencer's editor UI is never mounted, and `toggle` / `export` / `load` / `pump` are
+the API. One transport, owned by the page and read by the sequencer, exactly as the deck runs it.
 
 The matcher never plays audio of their own — they enter steps into the grid and submit; the host replays
 both. One transport (`lib/drumseq.js:1-22`), one owner (`index.html:2677-2700`).
@@ -123,6 +132,7 @@ Rides the shared-clock rule already written in the parent page, [[the-deck-arran
 
 | Piece | Where | Real detail |
 |---|---|---|
+| **The game** | `horse/index.html` | SET / LISTEN / REPRODUCE / verdict / choose / over, the grid, the diff, the power-ups, the strikes |
 | Sequencer API | `lib/drumseq.js:23` | `createDrumSeq(host)` → `open`, `setNotes`, `notes`, `export`, `load`, `setTempo` |
 | Note tuple | `lib/drumseq.js:65-71` | `exportNotes()` → `[[pitch, startSec, durSec, vel], …]`, sorted by start |
 | 16 steps / bar | `lib/drumseq.js:24` | `STEPS_PER_BAR = 16`; grid is step-space |
@@ -137,17 +147,57 @@ Rides the shared-clock rule already written in the parent page, [[the-deck-arran
 | Store singleton | `index.html:3150-3160` | `presetStore` = `createStore()`; IndexedDB, localStorage fallback |
 | Shared-clock design | parent §6 | host-authoritative, local derivation, edits as events |
 
-## 8. Open decisions
+## 8. Decisions and what is still open
 
-1. **Time rule per round** — `N = bars × 4 s` proposed; tune the constant, or make it per-voice-count.
-2. **Is velocity judged?** — default: advisory only (banded, reported, non-failing). Decide whether a
-   wrong band counts as a miss.
-3. **Extend or replace?** — a successful matcher *may* extend the existing pattern (one bar longer) or
-   replace it. Decide whether extend is mandatory past some round.
-4. **Earned or drafted?** — power-ups earned per win (default) vs drafted at match start.
-5. **Disconnect mid-round** — default: match abandoned, no strike. Decide whether the standing player
-   wins.
+Settled 2026-11-14:
 
+| Question | Decision |
+|---|---|
+| Time per round | `bars × 4 s` — default kept. KNOB `LISTEN_SECONDS_PER_BAR` |
+| Is velocity judged? | No. Advisory only; exact match is `(pitch, step)` |
+| Extend or replace? | **The winner's choice, every round** — `NEW PATTERN` or `BUILD ON IT (+1 BAR)` |
+| Disconnect mid-round | Match abandoned, no strike (cannot fire until §6 ships) |
+| Strikes | 3. KNOB `MATCH_STRIKES` |
+
+Still open:
+
+1. **The network layer (§6)** — the game is hot-seat today. Two browsers need the data channel and a
+   signalling decision (Buzz relay vs copy-paste SDP).
+2. **The kit is fixed at four voices** (kick / snare / hat / open hat) so the board stays legible. A
+   16-row kit + a scrolling board would need a different reveal affordance.
+3. **Power-up economy** — one of each at start, one earned per win, cap 3. Unexercised in a real match
+   against a human; tune it when matches have been played.
+
+## 9. Verified live (2026-11-14)
+
+Played end to end in headless Chrome against `https://ballademicz.com/daw/horse/`, every control clicked
+with dispatched pointer events (not `element.click()`), 0 console errors:
+
+```
+boot            kit [36,38,42,46]  step 0.1667 s  tempo 90  phase idle
+start match     synth armed (General User GS, channel 9)  phase set  setter 0
+draw 4 hits     sequencer holds 4 hits / 3 voices / 16 steps / 90 BPM
+lock in         phase listen  countdown 3.58 -> 2.38 (counting down)
+listen ends     phase reproduce  entry 0  target cells painted: 0 (hidden)
+reveal a voice  revealed [HAT]  2 hint cells  entry still 0 (it does not play it for you)
+submit wrong    phase verdict  missing 4  extra 1  grid markers miss 4 / extra 1
+continue        phase set  pattern back in the grid  panel hidden
+submit exact    phase choose  correct true  missing 0  extra 0  "MADE IT"
+earn + build    power-up taken  bars 1 -> 2  pattern carried over  listen window 7.58 s
+2x time         7.58 s -> 14.61 s (doubles the REMAINDER)
+pass            setter 0 -> 1  matcher 0  strikes unchanged  stock pass 1 -> 0
+empty lock in   refused: "draw at least one hit first"
+listen          grid read-only, a click during the listen changed nothing
+3 misses        strikes [0,0] -> [3,0]  phase over  "player 2 wins the match"
+start from over full reset: strikes, stock, bars, cells
+notes to synth  60 + 32 fired across the two runs (audio is really scheduled)
+```
+
+One behaviour the build added to the spec: **a miss holds on the verdict.** The first cut dropped
+straight back into SET, which meant the diff was computed, printed in the panel — and never painted on
+the grid. The whole point of judging by diff is that the player sees what they got wrong, so a miss now
+sits in a `verdict` phase with the missing (▲) and extra (▼) cells marked and a
+`CONTINUE — PLAYER n SHOOTS AGAIN` button before the shot goes back.
 ## Related
 
 * [[the-deck-arrangements-lane-locks]] — the parent design; §6 is the P2P clock this game rides.

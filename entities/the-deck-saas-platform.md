@@ -105,6 +105,11 @@ The next layer up from the catalog is defined in [[the-deck-arrangements-lane-lo
   sequence lane and no audio — its first arrangement is the pattern from the drum sequencer.
 * **P2P drum collaboration.** Two users open the same sequencer over a WebRTC data channel with one
   host-authoritative clock; edits travel as events, audio never crosses the wire.
+* **The first game on that clock** — **H.O.R.S.E.**, live at `ballademicz.com/daw/horse/` (commit
+  `2310d1a`): the setter draws a drum pattern, the matcher rebuilds it from memory after a timed listen,
+  each round adds a bar, three misses ends it. Built as its own route because the deck ships no MIDI drum
+  lane yet; it drives `lib/drumseq.js` headless on the same one transport. Hot-seat today — the network
+  layer is the remaining half. See [[deck-horse-sequencer-game]].
 
 ### RESET and SOLVE (shipped 2026-11-13, commit `ffd38bc`)
 
