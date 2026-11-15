@@ -277,6 +277,7 @@ straight back into SET, which meant the diff was computed, printed in the panel 
 the grid. The whole point of judging by diff is that the player sees what they got wrong, so a miss now
 sits in a `verdict` phase with the missing (▲) and extra (▼) cells marked and a
 `CONTINUE — PLAYER n SHOOTS AGAIN` button before the shot goes back.
+
 ## Related
 
 * [[the-deck-arrangements-lane-locks]] — the parent design; §6 is the P2P clock this game rides.
