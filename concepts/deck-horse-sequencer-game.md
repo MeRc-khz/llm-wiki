@@ -19,11 +19,12 @@ Basketball H.O.R.S.E. as call-and-response memory on the drum sequencer: one pla
 matcher reproduces. Builds on the two-user drum session in [[the-deck-arrangements-lane-locks]] §6 (one
 host, one clock, edits as events) and runs on the engine documented in [[ballademix-reassembly-deck]].
 
-**Shipped and playable** at `ballademicz.com/daw/horse/` (2026-11-14, commit `2310d1a`): the whole
-match loop — SET → LISTEN → REPRODUCE → diff → role swap → three-strike ending — runs on the shared clock
-in the browser, with the power-ups and the verdict panel live. What is **not** built is the network layer
-in §6: today both players share one keyboard (hot-seat). The round state and the diff are already shaped
-for the wire.
+**Shipped and playable** at `ballademicz.com/daw/horse/` — hot-seat since 2026-11-14 (commit
+`2310d1a`), **two browsers since 2026-11-15** (commit `7054b71`). The whole match loop — SET → LISTEN →
+REPRODUCE → diff → role swap → three-strike ending — runs on the shared clock in the browser, with the
+power-ups and the verdict panel live, and a networked match signals over the Buzz relay and then plays
+peer to peer over a WebRTC data channel (§6). Local two-player hot seat is still there and is the
+default; nothing touches the network unless somebody presses HOST or JOIN.
 
 It is a **separate route, not a mode inside the deck**, because the deck currently ships no MIDI drum
 lane (`TRACKS` has no `midiDrum` entry) — a drum-sequencer song is still the unbuilt half of §3 of
@@ -110,23 +111,63 @@ chooses which), **cap 3**. `POWERUP_EARN_PER_WIN = 1`, `POWERUP_CAP = 3`.
 ## 6. Network model
 
 Rides the shared-clock rule already written in the parent page, [[the-deck-arrangements-lane-locks]] §6 —
-**do not stream clock ticks; send the clock's parameters and the edits.**
+**do not stream clock ticks; send the clock's parameters and the edits.** Built 2026-11-15
+(`horse/net.js`, commit `7054b71`).
 
-* **One host, single writer.** The host owns the **transport origin** and is the sole authority. It
-  broadcasts `{tempo, bar, originTime, state}`; no negotiation, no split clock.
-* **Round state in, submission out.** The host broadcasts round state (`phase`, `bars`, `N`, `strikes`,
-  whose turn). The matcher sends **one submission snapshot**; the host diffs it (§4) and broadcasts the
-  verdict.
-* **The setter's pattern travels as a snapshot, in one message, on round start.** Never as a stream of
-  `noteAdd`/`noteRemove` edits — the game needs the target whole, not its edit history.
-* **Audio never crosses the wire** each peer plays its own local soundfont
-  (`index.html` `armDrums()`). The wire carries `[pitch, start, dur, vel]` tuples, not samples.
-* **Transport** a WebRTC data channel, signalling over the Buzz Nostr relay or copy-paste SDP (parent §6).
-* **Target drop.** When REPRODUCE begins, the matcher's client **drops the target pattern** from the live
-  edit path — the grid no longer holds it. **Be honest: this is client-side.** A determined player can
-  still read the pattern from their own memory or dev tools. This is a game for fun, not for stakes; the
+### The split of authority
+
+| Role | Owns | Sends |
+|---|---|---|
+| **Host** | the clock, the round, the strikes, the verdict | one `sync` carrying the whole public state, after every change |
+| **Guest** | its own grid and its own submission — nothing else | intents: `lock`, `submit`, `power`, `earn`, `choose`, `continue` |
+
+One writer for the match state, so the two peers cannot disagree about whose turn it is. The state that
+travels is the whole public record — `phase, round, bars, setter, matcher, strikes, stock, target,
+revealed, verdict, listenMs` — because a snapshot cannot partially apply and a stream of deltas can.
+The target travels as **one snapshot**, never as `noteAdd`/`noteRemove` edits: the game needs the shot
+whole, not its history.
+
+The **host ends the listen**, not each client. A guest that ran its own phase machine would drift from
+the host's clock and could clear its grid at a different moment than the verdict arrives.
+
+### Signalling: the Buzz relay
+
+* **Kind `24900`** — inside the ephemeral range (20000–29999), so the relay routes it through Redis
+  fan-out and **never stores it**. Verified after a full match: `select count(*) from events where
+  kind = 24900` → `0`.
+* **Channel `horse-signal`** (open visibility). The relay's channel fan-out is keyed on the **`h` tag**;
+  a `#t`-only selector matches nothing, and `#t` alongside `#h` is not enforced. So `h` is the selector
+  and the `t` tag (`horse-<code>`) is carried for the clients to read.
+* **A fresh keypair per page load.** `pubkey_allowlist_enabled` and `require_relay_membership` both
+  default to `false` in this deployment, so any key can NIP-42 authenticate, and an **open-visibility**
+  channel admits any authenticated pubkey even though the channel-membership check is real
+  ("member OR open-visibility channel").
+* **Subscribe only after the NIP-42 handshake settles.** A `REQ` sent before auth is refused with
+  `CLOSED`, and an unhandled `CLOSED` looks exactly like "the peer never answered" — this cost a full
+  debugging round; the client now surfaces `CLOSED` and re-subscribes.
+* **One offer, one answer, non-trickle ICE.** Both sides wait for `iceGatheringState === "complete"`
+  (bounded at 4 s) and put the whole SDP in one event each. The host re-publishes its offer every 2.5 s
+  until an answer lands, because an ephemeral event that arrives before the guest subscribes is gone.
+* **The payload is AES-GCM encrypted with the match code** (PBKDF2-SHA256, 150k iterations, fixed salt).
+  The channel is open, so anyone on the relay can *read* these events, and an SDP carries the peers' IP
+  addresses. The code is therefore the capability: private code, private match.
+  **Honest limit:** a 6-character code is ~31 bits, so this keeps eavesdroppers out, not attackers. It is
+  a game, not a secret. Anyone who guesses the code can also inject a competing answer.
+* **No signalling library.** `@noble/secp256k1` is vendored (MIT) for BIP-340 schnorr; event ids use
+  `crypto.subtle`; the relay client is ~90 lines of `["EVENT"/"REQ"/"AUTH"]` over a WebSocket.
+
+### Still true from the design
+
+* **Audio never crosses the wire** — each peer plays its own local soundfont (`index.html` `armDrums()`).
+  The wire carries `[pitch, start, dur, vel]` tuples.
+* **Target drop.** When REPRODUCE begins the matcher's client drops the target from the live edit path.
+  **Client-side, stated plainly:** a player with dev tools on their own machine can still find it. The
   drop protects the honest player's experience, not the state.
-* **Disconnect** default: the match is **abandoned, no strike** (§8).
+* **A timer ends the listen, not the frame loop.** `requestAnimationFrame` stops in a backgrounded tab,
+  so a network host whose window was hidden would never fire its own phase change and would stall both
+  players. The listen now ends on a `setTimeout`.
+* **Disconnect** — the match is abandoned, no strike. Verified: the surviving peer stays in phase with
+  `strikes: [0, 0]`.
 
 ## 7. What already exists to build on
 
@@ -160,19 +201,53 @@ Settled 2026-11-14:
 | Time per round | `bars × 4 s` — default kept. KNOB `LISTEN_SECONDS_PER_BAR` |
 | Is velocity judged? | No. Advisory only; exact match is `(pitch, step)` |
 | Extend or replace? | **The winner's choice, every round** — `NEW PATTERN` or `BUILD ON IT (+1 BAR)` |
-| Disconnect mid-round | Match abandoned, no strike (cannot fire until §6 ships) |
+| Disconnect mid-round | Match abandoned, no strike — verified over the wire |
 | Strikes | 3. KNOB `MATCH_STRIKES` |
 
 Still open:
 
-1. **The network layer (§6)** — the game is hot-seat today. Two browsers need the data channel and a
-   signalling decision (Buzz relay vs copy-paste SDP).
-2. **The kit is fixed at four voices** (kick / snare / hat / open hat) so the board stays legible. A
+1. **The kit is fixed at four voices** (kick / snare / hat / open hat) so the board stays legible. A
    16-row kit + a scrolling board would need a different reveal affordance.
-3. **Power-up economy** — one of each at start, one earned per win, cap 3. Unexercised in a real match
+2. **Power-up economy** — one of each at start, one earned per win, cap 3. Unexercised in a real match
    against a human; tune it when matches have been played.
+3. **Two players only.** The protocol has no room list, no spectators and no reconnection — if a peer
+   drops the match is over. Three-way H.O.R.S.E. would need the host to address more than one guest.
+4. **Music-aligned timing across the wire.** Each side still starts its own transport when the phase
+   message lands, so the two peers can be up to one network RTT apart in *pattern playback*. The judging
+   is unaffected (it is step-based, not audio-based), but two musicians playing together would want the
+   host to publish a start time and each side to schedule against its own clock offset.
 
-## 9. Verified live (2026-11-14)
+## 9. Verified live
+
+### The two-browser match (2026-11-15, commit `7054b71`)
+
+Two headless Chrome tabs, a real host and a real guest, every control clicked with dispatched pointer
+events; 0 console errors on both. Signalling went through the live relay and the play went over the data
+channel:
+
+```
+A hosts           code BNL8RU  · status "signalling"
+B joins           types the code, status "waiting for the host's offer"
+connect           A "connected — peer to peer"   B "connected — peer to peer"
+                  distinct signalling keypairs: true
+relay log (A)     signal in: answer · ice: connected · match on — player 1 sets
+relay log (B)     signal in: offer  · ice: checking · ice: connected
+both in           set / set · A is player 1 · B is player 2
+A draws 4 hits    B receives the shot: phase listen · 4 target notes · 4 painted cells · 3.58 s left
+host clock ends   B phase reproduce · target cells painted: 0 (hidden) · entry 0
+B reproduces      4 of 4 · submit
+verdict           both sides "MADE IT" · correct true · missing 0 · extra 0 · equal on both
+B calls EXTEND    A setter 1 · bars 2 · A and B agree, 4 cells carried
+guest sets        B draws and locks in -> the HOST applies it: A phase listen, 4 target notes
+turn gating       A is now the matcher; A's grid is not editable (false)
+guest power-up    A uses REVEAL -> the host arbitrates, reveals SNARE, 2 hint cells
+B leaves          A stays: strikes [0, 0] — a disconnect is not a miss
+relay footprint   select count(*) from events where kind = 24900  ->  0
+```
+
+### The single-machine match (2026-11-14)
+
+
 
 Played end to end in headless Chrome against `https://ballademicz.com/daw/horse/`, every control clicked
 with dispatched pointer events (not `element.click()`), 0 console errors:

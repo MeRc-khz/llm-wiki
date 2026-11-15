@@ -131,6 +131,30 @@ Image: `ghcr.io/block/buzz:main` — pin to sha or semver for production.
 
 Key env vars: `DATABASE_URL`, `REDIS_URL`, `BUZZ_BIND_ADDR`, `RELAY_URL`, `BUZZ_RELAY_PRIVATE_KEY`, `RELAY_OWNER_PUBKEY`.
 
+
+---
+
+## Using the relay to signal — what the transport actually permits
+
+Learned by building the H.O.R.S.E. two-browser match ([[deck-horse-sequencer-game]] §6): signalling
+over the relay, play peer to peer over a WebRTC data channel. The relay is a store-and-forward log, not
+a realtime bus, but its ephemeral range makes it a perfectly good introduction service.
+
+| Constraint | What it means for a client |
+|---|---|
+| **Ephemeral kinds 20000–29999** bypass DB, audit and search entirely | publish signalling as an ephemeral kind and it leaves no trace: `select count(*) from events where kind = <k>` is `0` after a full match. The relay fans it out through Redis and forgets it. |
+| **Channel-scoped, keyed on the `h` tag** | the fan-out selector is the channel. A `#t`-only filter matches **nothing** on this relay, and `#h` + `#t` is not enforced (`#t` is ignored, everything in the channel arrives). Read the `t` tag; do not filter on it. |
+| **`check_channel_membership` is "member OR open-visibility channel"** | an unknown pubkey can publish to an **open** channel. A private channel needs membership. Creating a dedicated open channel is the cheap way to give a browser client somewhere to talk. |
+| **`pubkey_allowlist_enabled` / `require_relay_membership` default `false`** (`BUZZ_PUBKEY_ALLOWLIST`, `BUZZ_REQUIRE_RELAY_MEMBERSHIP`) | on this deployment any freshly generated keypair can NIP-42 authenticate. Set either env var and that stops being true, so a client should not *bet* on it. |
+| **NIP-42 first, then `REQ`** | a `REQ` sent before the handshake settles is refused with `CLOSED`. A client that ignores `CLOSED` sees only silence and reads it as "the other peer never answered" — surface `CLOSED` and re-subscribe. |
+| **Events are public to channel readers** | an SDP carries IP addresses. Encrypt the payload with a shared secret (AES-GCM keyed on a match code) rather than publishing it in the clear; treat the code as the capability, and say out loud that a short code keeps eavesdroppers out, not attackers. |
+
+Kinds already taken in the ephemeral range: `20001` presence, `20002` typing, `24134` pairing,
+`24200` agent observer frame, `24810` huddle reaction. `24900` was free and is now the game's signalling
+kind. `24200` is the pattern to copy — the relay's own observer frames are *"a Buzz ephemeral event kind
+carrying NIP-44 encrypted JSON in the event content so relays can route frames without reading them"*
+(`buzz-core/src/observer.rs`).
+
 ---
 
 ## Why Buzz Over Discord/Slack
