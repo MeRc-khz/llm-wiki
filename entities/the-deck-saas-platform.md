@@ -1,7 +1,7 @@
 ---
 title: The Deck — Social Music SaaS Platform
 created: 2026-11-08
-updated: 2026-11-13
+updated: 2026-11-18
 type: entity
 tags: [music, monetization, video, solana, agentic]
 sources: []
@@ -18,9 +18,70 @@ a tempo, a melody track, a drum track, a master track, and the stems — and the
 and drums into sample pads and positions the clips on a shared timeline. The artist/owner then runs a
 **campaign** and ties in their social platforms for the **NFT video releases**.
 
+Live landing: `https://ballademicz.com/` (the storefront — see below)
 Live admin: `https://ballademicz.com/daw/admin/`
 Live deck: `https://ballademicz.com/daw/`
 Source: `/var/www/ballademicz/html/daw/` (git repo `MeRc-khz/ballademix`, branch `main`).
+
+## Storefront — the EP landing page (shipped 2026-11-18)
+
+The public front door for the record the platform is built on. **Light landing page plus a purchase CTA**,
+at the domain root so `/daw/` stays the product:
+
+| Route | Serves |
+|---|---|
+| `https://ballademicz.com/` | the landing page — the EP, the video, the Deck explainer, the store |
+| `https://ballademicz.com/daw/` | the Deck itself (unchanged) |
+| `https://ballademicz.com/daw/horse/` | H.O.R.S.E. |
+| `https://ballademicz.com/daw/admin/` | campaign, stems, deck builder, video NFT manifest |
+
+Source: `/srv/projects/REPOS/ballademicz-landing` (its own repo), deployed by copy into
+`/var/www/ballademicz/html/`.
+
+### Design
+
+Retro-90s-hip-hop, built from the **actual CD artwork of the ballademicz EP** — no stock imagery. The
+palette is sampled off the art (case black, aged paper, chrome, the insert's red, MAD gold, the
+contact-sheet teal), the wordmark is the graffiti tag cropped out of the insert, and the CD face is used
+as a rotating disc. Texture is CSS-only: halftone, scanlines, SVG grain.
+
+The nine tracks are printed from the **tray card**, with the two feature credits (`killitoff` feat. Nick
+Faulty & Zee-o, `shoestrangs` feat. QP & Kali Smoov) and the bonus `paprchassas` video that makes the
+release an **enhanced CD**. The video is the `paperchasers2.mp4` out of the bzr-dial demos
+(`/var/www/bzr-dial-menu/media/`), 4:06, played from `/media/paperchasers.mp4`.
+
+### The purchase CTA, and what it is honest about
+
+The store block carries the product model from [[the-deck-catalog-saas-structure]] — stem unlock, **buy the
+master** (which grants the master arrangement and every clip), and the EP bundle. **No checkout target
+exists yet**, and this is stated rather than faked:
+
+* **Stripe** — the live integration in the czarUI backend (`/api/create-checkout-session`) is hardcoded to
+  `bzr-dial-ui` with three plans (`single`/`team`/`eval`). No Deck product or price exists in the account.
+* **Solana** — `daw/nft/stems.json` says it outright: *"mint is null until the stem is minted"*. The gate
+  is built and waiting; nothing is minted and no price is set.
+
+So every Buy button reads a single `CHECKOUT_URL` constant at the top of the page's script. Paste a
+Stripe Payment Link and all of them become real checkout links (the buttons self-rewire to
+`target="_blank"` on load). Left empty, a click scrolls to the store panel and says so, and the panel
+points at the free Deck. **The missing input is one number — the price — not code.**
+
+### Verified live (2026-11-18, headless Chrome)
+
+```
+route + assets      /  200 · ep/*.jpg 200 · media/paperchasers.mp4 200 · /daw/ 200 · /daw/.git/ 404
+images              9 of 9 decoded, 0 broken
+font                Anton loaded
+video               duration 245.60 s (4:06) · readyState 4 · play() -> currentTime 2.39 and climbing
+buy CTA (unset)     click -> scrollY 0 -> 4473, store panel called out  (a real action, not a dead button)
+structure           3 tiers · 9 tracks · marquee duplicated for a seamless loop · all anchors resolve
+mobile 420px        no overflow; stats wrap 3+2, both CTAs fit one row
+console errors      0
+```
+
+Two defects the screenshots caught and the fix: the wordmark crop clipped the tag's descenders (the tag
+sits at rows 56–192 of the 1485 px insert, not the top 130), and the ghost buttons in the light store
+section were cream-on-cream and invisible.
 
 ## The upload unit: a deck
 

@@ -1174,3 +1174,18 @@ the timeline, though the SAMPLE lane is the second row and stays visible.
   bars with the pattern carried → 2× time doubles the REMAINDER (7.58 → 14.61 s) → PASS swaps the setter
   with no strike → empty LOCK IN refused → the grid is read-only during the listen → 3 misses ends the
   match with the winner named and a full reset on the next start. 0 console errors in both runs.
+## 2026-11-18 — ballademicz EP landing page at the domain root
+
+Built the storefront for the record the Deck is built on: `/srv/projects/REPOS/ballademicz-landing`,
+deployed to `/var/www/ballademicz/html/` so `https://ballademicz.com/` serves it while `/daw/` stays the
+product. Design is the actual ballademicz EP CD art in a retro-90s-hip-hop frame (wordmark cropped from
+the insert's graffiti tag, the CD face as a rotating disc, halftone/scanline/grain in CSS, palette
+sampled off the art), the nine-track list printed from the tray card, and the `paprchassas` video from the
+bzr-dial demos playing off `/media/paperchasers.mp4`. Store block carries the stem / master / bundle model
+with every Buy button reading one `CHECKOUT_URL` constant — **no Deck product, price or mint exists yet**
+(czarUI's live Stripe is hardcoded to `bzr-dial-ui`; `daw/nft/stems.json` has `mint: null`), so that
+target is the named missing input, not faked. Verified live in headless Chrome: 9/9 images decoded, video
+plays (245.6 s), CTA acts, 420 px mobile clean, 0 console errors. Two fixes from the screenshots: the
+wordmark crop was clipping the tag (it lives at rows 56–192 of the insert), and the light store section's
+ghost buttons were cream-on-cream. `entities/the-deck-saas-platform.md` carries the section.
+
